@@ -11,7 +11,7 @@
     --glass-bg: rgba(22, 30, 48, 0.55);
     --glass-border: rgba(255, 255, 255, 0.12);
     --red: #e63946;
-    --gold: #d4af37;
+    --gold: #facc15;
     --neon-pink: #f72585;
     --neon-purple: #7209b7;
     --neon-blue: #3a86ff;
@@ -27,20 +27,19 @@
     background: #000;
   }
 
-  /* TELEFON TAM EKRAN KATMANI */
   .mobile-screen {
     width: 100%;
     height: 100%;
     height: 100dvh;
-    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.8) 100%), 
+    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.82) 100%), 
                 url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: env(safe-area-inset-top, 10px) 16px env(safe-area-inset-bottom, 8px);
+    position: relative;
   }
 
-  /* ÜST PROFİL BAR */
   .top-bar {
     display: flex;
     align-items: center;
@@ -55,7 +54,7 @@
     border: 2px solid var(--gold);
     display: flex; align-items: center; justify-content: center;
     font-size: 17px;
-    box-shadow: 0 0 12px rgba(212,175,55,0.4);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
   }
   .page-name { font-size: 17px; font-weight: 800; color: #fff; }
   
@@ -70,12 +69,10 @@
     cursor: pointer;
   }
 
-  /* GİRİŞ METNİ */
   .greeting-section { margin-top: 6px; }
   .greeting-section h1 { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.15; }
   .greeting-section p { font-size: 13.5px; font-weight: 600; color: #e2e8f0; margin-top: 3px; }
 
-  /* ARAMA ÇUBUĞU */
   .search-pill {
     height: 46px;
     background: rgba(20, 28, 45, 0.65);
@@ -93,7 +90,6 @@
   .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
   .mic-icon { font-size: 15px; }
 
-  /* 10'LU MODÜL IZGARASI */
   .modules-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -102,7 +98,7 @@
     align-content: center;
   }
   .m-card {
-    height: 70px;
+    height: 68px;
     background: rgba(18, 26, 44, 0.65);
     backdrop-filter: blur(14px);
     border: 1.5px solid rgba(255, 255, 255, 0.1);
@@ -121,7 +117,6 @@
     box-shadow: 0 0 16px rgba(255,255,255,0.4) !important;
   }
 
-  /* ÇERÇEVE RENKLERİ */
   .neon-pink { border-color: rgba(247, 37, 133, 0.65); box-shadow: inset 0 0 8px rgba(247, 37, 133, 0.15); }
   .neon-purple { border-color: rgba(114, 9, 183, 0.75); box-shadow: inset 0 0 8px rgba(114, 9, 183, 0.2); }
   .neon-cyan { border-color: rgba(76, 201, 240, 0.65); box-shadow: inset 0 0 8px rgba(76, 201, 240, 0.18); }
@@ -129,28 +124,51 @@
 
   .m-icon { font-size: 19px; line-height: 1; }
   .m-label { font-size: 10.5px; font-weight: 700; color: #fff; text-align: center; }
-
   .card-center-bot { grid-column: 2; }
 
-  /* BİLDİRİM ŞERİDİ */
-  .hud-banner {
-    background: rgba(7, 10, 16, 0.85);
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08);
-    padding: 6px 12px;
-    font-size: 11px;
-    color: var(--gold);
-    font-weight: 600;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  /* SİNEMATİK ALTYAZI ÇUBUĞU (SUBTITLE CONTAINER) */
+  .subtitle-container {
+    background: rgba(5, 7, 12, 0.88);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 8px 12px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 6px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: border-color 0.3s;
+  }
+  .subtitle-container.talking {
+    border-color: rgba(250, 204, 21, 0.6);
+  }
+  .sub-icon {
+    font-size: 12px;
+    color: var(--gold);
+    margin-right: 8px;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  .subtitle-text {
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+  }
+  .sub-word-active {
+    color: var(--gold);
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+    transition: color 0.15s;
   }
 
   /* ALT DOCK BAR */
   .bottom-dock {
-    height: 64px;
+    height: 62px;
     background: rgba(10, 14, 24, 0.92);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -175,7 +193,6 @@
   .dock-item.active { color: var(--red); }
   .dock-icon { font-size: 17px; }
 
-  /* ORTADAKİ KIRMIZI DÜĞME */
   .dock-plus {
     width: 48px; height: 48px;
     border-radius: 50%;
@@ -194,7 +211,6 @@
 
 <div class="mobile-screen">
   
-  <!-- ÜST KISIM -->
   <div class="top-bar">
     <div class="brand-left">
       <div class="logo-circle">𓄂𓆃</div>
@@ -203,13 +219,11 @@
     <div class="btn-bell" onclick="toggleSpeech()">🔔</div>
   </div>
 
-  <!-- BAŞLIK -->
   <div class="greeting-section">
     <h1>Merhaba!</h1>
-    <p id="dynText">Bugün ne üretmek istersin?</p>
+    <p>Bugün ne üretmek istersin?</p>
   </div>
 
-  <!-- ARAMA ALANI -->
   <div class="search-pill" onclick="toggleSpeech()">
     <div class="search-left">
       <span>🔍</span>
@@ -218,7 +232,6 @@
     <div class="mic-icon">🎙️</div>
   </div>
 
-  <!-- 10'LU BUTON GRUBU -->
   <div class="modules-grid">
     <div class="m-card neon-pink" id="c-proj">
       <div class="m-icon">📁</div>
@@ -259,19 +272,19 @@
       <div class="m-label">Medya</div>
     </div>
 
-    <!-- MERKEZ AYARLAR -->
     <div class="m-card neon-blue card-center-bot" id="c-sett">
       <div class="m-icon">⚙️</div>
       <div class="m-label">Ayarlar</div>
     </div>
   </div>
 
-  <!-- BİLGİ BARI -->
-  <div class="hud-banner" id="bannerMsg">
-    Sunumu başlatmak için mikrofon veya kırmızı '+' butonuna dokunun.
+  <div class="subtitle-container" id="subBox">
+    <span class="sub-icon">💬</span>
+    <div class="subtitle-text" id="subText">
+      Başlatmak için mikrofona veya kırmızı '+' tuşuna dokunun.
+    </div>
   </div>
 
-  <!-- ALT MENÜ -->
   <div class="bottom-dock">
     <div class="dock-item active">
       <div class="dock-icon">🏠</div>
@@ -299,6 +312,8 @@
 <script>
 let isPlaying = false;
 let synth = window.speechSynthesis;
+let ahmetVoice = null;
+let subtitleTimer = null;
 
 const narrative = [
   {
@@ -319,19 +334,60 @@ const narrative = [
   }
 ];
 
-function getMaleVoice() {
-  const list = synth.getVoices().filter(v => v.lang && v.lang.includes('tr'));
-  return list.find(v => {
+// Ahmet / Erkek Ses Filtresi
+function bindAhmetVoice() {
+  const voices = synth.getVoices();
+  const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
+  const nonFemale = trVoices.filter(v => {
     const n = v.name.toLowerCase();
-    return (n.includes('male') || n.includes('erkek') || n.includes('ahmet') || n.includes('tolga')) && !n.includes('female');
-  }) || list[0] || null;
+    return !n.includes('female') && !n.includes('kadın') && !n.includes('yelda') && !n.includes('seda') && !n.includes('zeynep');
+  });
+
+  ahmetVoice = nonFemale.find(v => {
+    const n = v.name.toLowerCase();
+    return n.includes('ahmet') || n.includes('male') || n.includes('erkek') || n.includes('tolga') || n.includes('cem') || n.includes('tr-tr-x-dfz#male');
+  }) || nonFemale[0] || trVoices[0] || null;
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = bindAhmetVoice;
+}
+
+// Altyazıyı Konuşma Boyunca Sözcük Sözcük Akıtma (Subtitle Flow)
+function startSubtitleAnimation(fullText, durationMs) {
+  clearInterval(subtitleTimer);
+  const words = fullText.split(' ');
+  const subBox = document.getElementById('subBox');
+  const subText = document.getElementById('subText');
+  subBox.classList.add('talking');
+
+  // Her sözcüğü span içine al
+  subText.innerHTML = words.map((w, i) => `<span id="word-${i}">${w}</span>`).join(' ');
+
+  const interval = durationMs / words.length;
+  let curIndex = 0;
+
+  subtitleTimer = setInterval(() => {
+    if (curIndex < words.length) {
+      document.querySelectorAll('.subtitle-text span').forEach(s => s.classList.remove('sub-word-active'));
+      const activeEl = document.getElementById(`word-${curIndex}`);
+      if (activeEl) {
+        activeEl.classList.add('sub-word-active');
+      }
+      curIndex++;
+    } else {
+      clearInterval(subtitleTimer);
+    }
+  }, interval);
 }
 
 function runNarrative(idx) {
   if (idx >= narrative.length) {
     isPlaying = false;
+    clearInterval(subtitleTimer);
     document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-    document.getElementById('bannerMsg').innerText = "Sunum tamamlandı.";
+    document.getElementById('subBox').classList.remove('talking');
+    document.getElementById('subText').innerHTML = "Sunum başarıyla tamamlandı.";
     return;
   }
 
@@ -340,18 +396,41 @@ function runNarrative(idx) {
   const el = document.getElementById(s.target);
   if (el) el.classList.add('active-glow');
 
-  document.getElementById('bannerMsg').innerText = s.text;
-
   synth.cancel();
   const ut = new SpeechSynthesisUtterance(s.text);
-  const v = getMaleVoice();
-  if (v) ut.voice = v;
+  
+  if (!ahmetVoice) bindAhmetVoice();
+  if (ahmetVoice) ut.voice = ahmetVoice;
+
   ut.lang = 'tr-TR';
   ut.rate = 1.0;
-  ut.pitch = 0.82;
+  ut.pitch = 0.70; // Tok bas ton
 
-  ut.onend = () => { if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600); };
-  ut.onerror = () => { if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600); };
+  // Yaklaşık okuma süresini hesaplayıp altyazı akışını başlat (kelime başına ~360ms)
+  const estimatedDuration = s.text.split(' ').length * 360;
+  startSubtitleAnimation(s.text, estimatedDuration);
+
+  // Destekleyen tarayıcılarda anlık kelime eşleşmesi
+  ut.onboundary = function(e) {
+    if (e.name === 'word') {
+      const charIndex = e.charIndex;
+      const textUntilNow = s.text.substring(0, charIndex);
+      const wordIndex = textUntilNow.trim().split(/\s+/).length - 1;
+      document.querySelectorAll('.subtitle-text span').forEach(s => s.classList.remove('sub-word-active'));
+      const wEl = document.getElementById(`word-${wordIndex}`);
+      if (wEl) wEl.classList.add('sub-word-active');
+    }
+  };
+
+  ut.onend = () => {
+    clearInterval(subtitleTimer);
+    if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600);
+  };
+  ut.onerror = () => {
+    clearInterval(subtitleTimer);
+    if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600);
+  };
+
   synth.speak(ut);
 }
 
@@ -359,8 +438,10 @@ function toggleSpeech() {
   if (isPlaying) {
     isPlaying = false;
     synth.cancel();
+    clearInterval(subtitleTimer);
     document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-    document.getElementById('bannerMsg').innerText = "Durduruldu.";
+    document.getElementById('subBox').classList.remove('talking');
+    document.getElementById('subText').innerHTML = "Durduruldu.";
     return;
   }
   isPlaying = true;
