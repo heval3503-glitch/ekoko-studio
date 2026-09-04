@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --glass-bg: rgba(22, 30, 48, 0.55);
+    --glass-bg: rgba(22, 30, 48, 0.6);
     --glass-border: rgba(255, 255, 255, 0.12);
     --red: #e63946;
     --gold: #facc15;
@@ -31,7 +31,7 @@
     width: 100%;
     height: 100%;
     height: 100dvh;
-    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.85) 100%), 
+    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.88) 100%), 
                 url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
     display: flex;
     flex-direction: column;
@@ -61,10 +61,10 @@
   .header-actions { display: flex; align-items: center; gap: 8px; }
   
   .lang-toggle-btn {
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid var(--gold);
+    background: rgba(0, 0, 0, 0.65);
+    border: 1.5px solid var(--gold);
     color: #fff;
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-radius: 18px;
     font-size: 11px;
     font-weight: 800;
@@ -72,7 +72,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
   }
   .lang-active { color: var(--gold); }
 
@@ -132,7 +132,7 @@
   .m-card:active, .m-card.active-glow {
     transform: scale(0.96);
     border-color: #fff !important;
-    box-shadow: 0 0 16px rgba(255,255,255,0.4) !important;
+    box-shadow: 0 0 16px rgba(255,255,255,0.45) !important;
   }
 
   .neon-pink { border-color: rgba(247, 37, 133, 0.65); }
@@ -145,19 +145,19 @@
   .card-center-bot { grid-column: 2; }
 
   .subtitle-container {
-    background: rgba(5, 7, 12, 0.9);
+    background: rgba(5, 7, 12, 0.92);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     padding: 8px 12px;
-    min-height: 48px;
+    min-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 6px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.6);
   }
-  .subtitle-container.talking { border-color: rgba(250, 204, 21, 0.6); }
+  .subtitle-container.talking { border-color: rgba(250, 204, 21, 0.65); }
   .sub-icon { font-size: 12px; color: var(--gold); margin-right: 8px; flex-shrink: 0; }
   .subtitle-text { font-size: 11px; font-weight: 600; line-height: 1.4; color: #ffffff; text-align: center; }
   .sub-word-active { color: var(--gold); font-weight: 800; text-shadow: 0 0 8px rgba(250, 204, 21, 0.8); }
@@ -209,25 +209,25 @@
   <div class="top-bar">
     <div class="brand-left">
       <div class="logo-circle">𓄂𓆃</div>
-      <div class="page-name" id="ui-home">Ana Sayfa</div>
+      <div class="page-name" id="ui-home">Destpêk</div>
     </div>
     <div class="header-actions">
       <button class="lang-toggle-btn" onclick="toggleLanguage()">
-        🌐 <span id="langLabel"><span class="lang-active">TR</span> | KU</span>
+        🌐 <span id="langLabel">TR | <span class="lang-active">KU</span></span>
       </button>
       <div class="btn-bell" onclick="togglePresentation()">🔔</div>
     </div>
   </div>
 
   <div class="greeting-section">
-    <h1 id="ui-greet">Merhaba!</h1>
-    <p id="ui-question">Bugün ne üretmek istersin?</p>
+    <h1 id="ui-greet">Silav!</h1>
+    <p id="ui-question">Îro tu dixwazî çi biafirînî?</p>
   </div>
 
   <div class="search-pill" onclick="togglePresentation()">
     <div class="search-left">
       <span>🔍</span>
-      <span id="ui-search">Aklındaki fikri anlat...</span>
+      <span id="ui-search">Ramana di mejiyê xwe de bêje...</span>
     </div>
     <div class="mic-icon">🎙️</div>
   </div>
@@ -235,11 +235,11 @@
   <div class="modules-grid">
     <div class="m-card neon-pink" id="c-proj">
       <div class="m-icon">📁</div>
-      <div class="m-label" id="lbl-proj">Projeler</div>
+      <div class="m-label" id="lbl-proj">Projeyên Min</div>
     </div>
     <div class="m-card neon-purple" id="c-prod">
       <div class="m-icon">✂️</div>
-      <div class="m-label" id="lbl-prod">Üretim Atölyesi</div>
+      <div class="m-label" id="lbl-prod">Kargeha Çêkirinê</div>
     </div>
     <div class="m-card neon-cyan" id="c-chat">
       <div class="m-icon">💬</div>
@@ -248,24 +248,24 @@
 
     <div class="m-card neon-blue" id="c-field">
       <div class="m-icon">🎛️</div>
-      <div class="m-label" id="lbl-field">Üretim Alanı</div>
+      <div class="m-label" id="lbl-field">Qada Karkirinê</div>
     </div>
     <div class="m-card neon-purple" id="c-dream">
       <div class="m-icon">🌌</div>
-      <div class="m-label" id="lbl-dream">Hayal Dünyası</div>
+      <div class="m-label" id="lbl-dream">Cîhana Xeyalan</div>
     </div>
     <div class="m-card neon-purple" id="c-comp">
       <div class="m-icon">🏆</div>
-      <div class="m-label" id="lbl-comp">Yarışmalar</div>
+      <div class="m-label" id="lbl-comp">Pêşbirk</div>
     </div>
 
     <div class="m-card neon-blue" id="c-crit">
       <div class="m-icon">⚖️</div>
-      <div class="m-label" id="lbl-crit">Eleştiri Masası</div>
+      <div class="m-label" id="lbl-crit">Maseya Rexneyê</div>
     </div>
     <div class="m-card neon-cyan" id="c-lib">
       <div class="m-icon">📚</div>
-      <div class="m-label" id="lbl-lib">Kütüphane</div>
+      <div class="m-label" id="lbl-lib">Pirtûkxane</div>
     </div>
     <div class="m-card neon-blue" id="c-media">
       <div class="m-icon">🗂️</div>
@@ -274,48 +274,48 @@
 
     <div class="m-card neon-blue card-center-bot" id="c-sett">
       <div class="m-icon">⚙️</div>
-      <div class="m-label" id="lbl-sett">Ayarlar</div>
+      <div class="m-label" id="lbl-sett">Mîheng</div>
     </div>
   </div>
 
   <div class="subtitle-container" id="subBox">
     <span class="sub-icon">💬</span>
     <div class="subtitle-text" id="subText">
-      Başlatmak için mikrofona veya kırmızı '+' tuşuna dokunun.
+      Ji bo destpêkirinê li mîkrofonê an jî bişkoka sor (+) bixe.
     </div>
   </div>
 
   <div class="bottom-dock">
     <div class="dock-item active">
       <div class="dock-icon">🏠</div>
-      <span id="dock-home">Ana Sayfa</span>
+      <span id="dock-home">Destpêk</span>
     </div>
     <div class="dock-item">
       <div class="dock-icon">📁</div>
-      <span id="dock-proj">Projeler</span>
+      <span id="dock-proj">Projeyan</span>
     </div>
 
     <div class="dock-plus" onclick="togglePresentation()">+</div>
 
     <div class="dock-item">
       <div class="dock-icon">📚</div>
-      <span id="dock-lib">Kütüphane</span>
+      <span id="dock-lib">Pirtûkxane</span>
     </div>
     <div class="dock-item">
       <div class="dock-icon">⚙️</div>
-      <span id="dock-sett">Ayarlar</span>
+      <span id="dock-sett">Mîheng</span>
     </div>
   </div>
 
 </div>
 
 <script>
-let currentLang = 'TR';
+let currentLang = 'KU'; // Açılış doğrudan Kürtçe
 let isRunning = false;
 let currentAudio = null;
 let wordTimer = null;
 let synth = window.speechSynthesis;
-let naturalMaleVoice = null;
+let naturalVoice = null;
 
 const UI_TEXTS = {
   TR: {
@@ -358,7 +358,30 @@ const UI_TEXTS = {
   }
 };
 
+// DOSYA İSİMLERİ BİREBİR YÜKLEDİĞİN WAV DOSYALARI OLARAK AYARLANDI
 const SPEECH_DATA = {
+  KU: [
+    {
+      target: 'c-prod',
+      audioFile: 'kurdish-tts%20(1).wav',
+      text: "Hûn bi xêr hatin stûdyoya Ekoko Medya. Ji bo afirandina vîdyoyan em her tiştî li vir kom dikin."
+    },
+    {
+      target: 'c-chat',
+      audioFile: 'kurdish-tts%20(2).wav',
+      text: "Sohbeta Zekaya Çêkirî, wek derhênerekî jîr û zana li kêleka te ye. Tu tenê ramana xwe jê re bibêje; ew ê reng, hest û dîmenên te bi rengekî hunerî saz bike."
+    },
+    {
+      target: 'c-field',
+      audioFile: 'kurdish-tts%20(3).wav',
+      text: "Qada Karkirinê, ew maseya pîşeyî ye ku dem û keda te lê dibe huner. Li vir parçeyên dîmenan bi hev re tên girêdan û çîroka te derdikeve ser dika sînemayê."
+    },
+    {
+      target: 'c-dream',
+      audioFile: 'kurdish-tts%20(4).wav',
+      text: "Cîhana Xeyalan û hêza Gewer AI; bîra me ya kevnar, dengê dengbêjên me û kûrahiya çanda me tîne ser ekranên serdema nû. Sînor tune ye, tenê afirandin heye."
+    }
+  ],
   TR: [
     {
       target: 'c-prod',
@@ -375,28 +398,6 @@ const SPEECH_DATA = {
     {
       target: 'c-dream',
       text: "Hayal Dünyası ve Gever Ay; kadim sözlü hafızamızı ve dengbejlik mirasını dijital çağa taşıma bilincidir."
-    }
-  ],
-  KU: [
-    {
-      target: 'c-prod',
-      audio: 'ses1.mp3',
-      text: "Hûn bi xêr hatin stûdyoya Ekoko Medya. Ji bo afirandina vîdyoyan em her tiştî li vir kom dikin."
-    },
-    {
-      target: 'c-chat',
-      audio: 'ses2.mp3',
-      text: "Sohbeta Zekaya Çêkirî, wek derhênerekî jîr û zana li kêleka te ye. Tu tenê ramana xwe jê re bibêje; ew ê reng, hest û dîmenên te bi rengekî hunerî saz bike."
-    },
-    {
-      target: 'c-field',
-      audio: 'ses3.mp3',
-      text: "Qada Karkirinê, ew maseya pîşeyî ye ku dem û keda te lê dibe huner. Li vir parçeyên dîmenan bi hev re tên girêdan û çîroka te derdikeve ser dika sînemayê."
-    },
-    {
-      target: 'c-dream',
-      audio: 'ses4.mp3',
-      text: "Cîhana Xeyalan û hêza Gewer AI; bîra me ya kevnar, dengê dengbêjên me û kûrahiya çanda me tîne ser ekranên serdema nû. Sînor tune ye, tenê afirandin heye."
     }
   ]
 };
@@ -434,25 +435,14 @@ function toggleLanguage() {
   document.getElementById('subText').innerText = t.subDefault;
 }
 
-// DOĞAL ERKEK SESİ MOTORU (Robotik Değil, Standart İnsan Frekansı)
-function bindNaturalVoice() {
+// TÜRKÇE SES: YALNIZCA DOĞAL MOTOR (Pitch oynaması yok, robotluk sıfırlandı)
+function getNaturalVoice() {
   const voices = synth.getVoices();
-  const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
-  
-  const maleVoices = trVoices.filter(v => {
+  const tr = voices.filter(v => v.lang && v.lang.toLowerCase().includes('tr'));
+  return tr.find(v => {
     const n = v.name.toLowerCase();
-    return !n.includes('female') && !n.includes('kadın') && !n.includes('yelda') && !n.includes('seda') && !n.includes('zeynep');
-  });
-
-  // Doğal / Neural erkek paketlerini öncelikle seç
-  naturalMaleVoice = maleVoices.find(v => {
-    const n = v.name.toLowerCase();
-    return n.includes('natural') || n.includes('neural') || n.includes('ahmet') || n.includes('cem') || n.includes('tolga') || n.includes('male');
-  }) || maleVoices[0] || trVoices[0] || null;
-}
-
-if (speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = bindNaturalVoice;
+    return !n.includes('female') && !n.includes('kadın');
+  }) || tr[0] || null;
 }
 
 function highlightWords(text, durationSec) {
@@ -495,15 +485,18 @@ function playStep(idx) {
   const subBox = document.getElementById('subBox');
   subBox.classList.add('talking');
 
+  // KÜRTÇE: DOĞRUDAN SENİN YÜKLEDİĞİN .WAV DOSYALARI ÇALAR
   if (currentLang === 'KU') {
-    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
-    currentAudio = new Audio(step.audio);
+    if (currentAudio) { currentAudio.pause(); }
+    
+    currentAudio = new Audio(step.audioFile);
     
     currentAudio.onloadedmetadata = () => {
-      highlightWords(step.text, currentAudio.duration || 5);
+      highlightWords(step.text, currentAudio.duration || 6);
     };
 
-    currentAudio.play().catch(() => {
+    currentAudio.play().catch(e => {
+      console.log("Audio play error: ", e);
       highlightWords(step.text, 5);
       setTimeout(() => { if (isRunning) playStep(idx + 1); }, 5200);
     });
@@ -512,17 +505,16 @@ function playStep(idx) {
       clearInterval(wordTimer);
       if (isRunning) setTimeout(() => playStep(idx + 1), 600);
     };
-  } else {
+  } 
+  // TÜRKÇE: ROBOTSUZ DOĞAL SES
+  else {
     synth.cancel();
     const ut = new SpeechSynthesisUtterance(step.text);
-    if (!naturalMaleVoice) bindNaturalVoice();
-    if (naturalMaleVoice) ut.voice = naturalMaleVoice;
-    
+    const v = getNaturalVoice();
+    if (v) ut.voice = v;
     ut.lang = 'tr-TR';
-    
-    // Doğal, robotik olmayan insan tonu parametreleri:
-    ut.rate = 1.02;  // Akıcı, duraksamayan diksiyon hızı
-    ut.pitch = 0.96; // 0.70'lik mekanik kalınlık kaldırıldı, doğal erkek konuşma frekansına çekildi
+    ut.rate = 1.0;
+    ut.pitch = 1.0; // Standart insan tonu
 
     const estDuration = (step.text.split(' ').length * 340) / 1000;
     highlightWords(step.text, estDuration);
