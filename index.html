@@ -2,341 +2,372 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>EKOKŌ MEDIA AI STUDIO PRO</title>
 <style>
   :root {
-    --bg-main: #0a0d14;
-    --panel-bg: #0f131d;
-    --border-color: #23293a;
+    --bg-base: #06080d;
+    --panel: #0d111a;
+    --panel-sub: #131926;
+    --border: #1e2638;
     --gold: #d4af37;
-    --red-accent: #e63946;
+    --red: #e63946;
     --cyan: #00f0ff;
-    --text-white: #ffffff;
-    --text-muted: #8e95a5;
+    --green: #10b981;
+    --text: #e2e8f0;
+    --muted: #64748b;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-  body { background: var(--bg-main); color: var(--text-white); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; }
+  body { background: var(--bg-base); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-  .top-header {
-    height: 50px;
-    background: #090c12;
-    border-bottom: 1px solid var(--border-color);
+  /* TOP STATUS BAR */
+  .top-bar {
+    height: 44px;
+    background: #080b12;
+    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 16px;
-    z-index: 50;
+    padding: 0 14px;
+    z-index: 20;
   }
-  .brand-area { display: flex; align-items: center; gap: 10px; }
-  .brand-logo { font-size: 18px; color: var(--gold); }
-  .brand-text { font-size: 13px; font-weight: 900; letter-spacing: 1px; color: #fff; }
-  .btn-sim-start {
-    background: linear-gradient(135deg, var(--gold), #9b7914);
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+  .brand span { color: var(--gold); }
+  .badge-engine { background: rgba(0,240,255,0.1); border: 1px solid var(--cyan); color: var(--cyan); font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 800; }
+  .btn-run {
+    background: linear-gradient(135deg, var(--gold), #997a15);
     color: #000;
     border: none;
     border-radius: 6px;
-    padding: 8px 18px;
+    padding: 7px 18px;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(212,175,55,0.4);
+    box-shadow: 0 0 16px rgba(212,175,55,0.3);
   }
 
-  .main-app { display: flex; flex: 1; overflow: hidden; }
+  /* WORKSPACE */
+  .workspace { flex: 1; display: flex; min-height: 0; }
 
-  .left-nav {
+  /* LEFT SIDEBAR */
+  .sidebar {
     width: 170px;
-    background: var(--panel-bg);
-    border-right: 1px solid var(--border-color);
+    background: var(--panel);
+    border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 8px 6px;
-    gap: 2px;
+    padding: 6px;
+    gap: 3px;
   }
-  .nav-btn {
+  .side-item {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 10px;
     border-radius: 6px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
     cursor: pointer;
   }
-  .nav-btn.active { background: rgba(230,57,70,0.15); color: #fff; border-left: 3px solid var(--red-accent); }
+  .side-item.active { background: rgba(230,57,70,0.15); color: #fff; border-left: 3px solid var(--red); }
 
-  .center-stage { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .center-top-tabs {
-    height: 40px;
-    background: #0d111a;
-    border-bottom: 1px solid var(--border-color);
+  /* CENTER DISPLAY */
+  .center-stage { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  
+  .monitor-wrapper { flex: 1; display: flex; background: #000; position: relative; min-height: 0; }
+  .main-monitor {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80') center/cover;
+    position: relative;
     display: flex;
-    align-items: center;
-    padding: 0 12px;
-    gap: 6px;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
   }
-  .tab-btn { background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 700; padding: 6px 12px; border-radius: 5px; }
-  .tab-btn.active { background: rgba(230,57,70,0.2); color: var(--red-accent); }
+  .main-monitor::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 60%); }
+  
+  .monitor-hud {
+    position: absolute;
+    top: 10px; left: 12px; right: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+  .hud-rec { color: var(--red); display: flex; align-items: center; gap: 5px; }
+  .hud-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); animation: recBlink 1s infinite; }
+  @keyframes recBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
 
-  .center-middle { flex: 1; display: flex; min-height: 0; }
-  .media-library {
-    width: 230px;
-    background: #0c0f17;
-    border-right: 1px solid var(--border-color);
+  .subtitles-box { position: relative; z-index: 2; max-width: 90%; }
+  .subtitles-box h2 { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+  .subtitles-box p { font-size: 12px; line-height: 1.5; color: #cbd5e1; }
+
+  /* MASTER AUDIO VU METER */
+  .vu-meter-panel {
+    width: 28px;
+    background: #080a10;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 6px 4px;
+    gap: 3px;
+  }
+  .vu-bar { flex: 1; background: #141a29; border-radius: 2px; position: relative; overflow: hidden; }
+  .vu-fill { position: absolute; bottom: 0; width: 100%; height: 10%; background: linear-gradient(0deg, var(--green) 60%, var(--gold) 85%, var(--red) 100%); transition: height 0.1s; }
+
+  /* RIGHT DETAILS */
+  .right-details {
+    width: 220px;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     padding: 10px;
     gap: 8px;
   }
-  .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; overflow-y: auto; }
-  .lib-item { background: #141824; border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color); }
-  .lib-item img { width: 100%; height: 50px; object-fit: cover; display: block; }
-  .lib-item-title { font-size: 9px; padding: 4px; color: #ccc; }
+  .panel-header { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+  .spec-card { background: var(--panel-sub); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 11px; display: flex; flex-direction: column; gap: 4px; }
+  .spec-row { display: flex; justify-content: space-between; color: var(--muted); }
+  .spec-row strong { color: #fff; }
 
-  .monitor-panel { flex: 1; background: #000; display: flex; flex-direction: column; position: relative; }
-  .monitor-display {
-    flex: 1;
-    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80') center/cover;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 24px;
-  }
-  .monitor-display::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%); }
-  .quote-box { position: relative; z-index: 2; max-width: 80%; }
-  .quote-box h2 { font-size: 17px; font-weight: 700; font-style: italic; color: #fff; }
-  .quote-box span { font-size: 12px; color: var(--gold); font-weight: 800; display: block; margin-top: 4px; }
-  .monitor-controls { height: 36px; background: #080b10; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 14px; font-size: 11px; color: var(--text-muted); }
-
-  .right-panel {
-    width: 220px;
-    background: var(--panel-bg);
-    border-left: 1px solid var(--border-color);
+  /* NLE TIMELINE */
+  .timeline {
+    height: 160px;
+    background: #080b12;
+    border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    gap: 10px;
+    position: relative;
   }
-  .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  .tool-box { background: #141824; border: 1px solid var(--border-color); border-radius: 4px; padding: 6px 2px; text-align: center; font-size: 9px; color: #bbb; }
-  .properties-box { background: #111520; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; font-size: 10px; display: flex; flex-direction: column; gap: 4px; }
-  .prop-row { display: flex; justify-content: space-between; color: var(--text-muted); }
+  .timeline-bar {
+    height: 24px;
+    background: #0f1420;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .tracks-container { flex: 1; position: relative; overflow: hidden; padding: 4px 0; display: flex; flex-direction: column; gap: 3px; }
 
-  .timeline-area { height: 160px; background: #080a0f; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; }
-  .timeline-toolbar { height: 26px; background: #0c0f16; border-bottom: 1px solid #1a1e2b; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; font-size: 10px; color: var(--text-muted); }
-  .timeline-tracks { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 4px; }
-  .t-track { height: 24px; display: flex; align-items: center; gap: 8px; }
-  .t-name { width: 60px; font-size: 9px; font-weight: 700; color: var(--text-muted); text-align: right; }
-  .t-lane { flex: 1; height: 100%; background: #10141f; border-radius: 3px; position: relative; overflow: hidden; }
-  .t-clip { position: absolute; height: 80%; top: 10%; border-radius: 3px; font-size: 9px; font-weight: 700; padding: 0 8px; display: flex; align-items: center; color: #fff; }
-  .clip-v1 { background: #1e3a8a; border: 1px solid #3b82f6; width: 45%; left: 10%; }
-  .clip-v2 { background: #065f46; border: 1px solid #10b981; width: 35%; left: 58%; }
-  .clip-a1 { background: #6b21a8; border: 1px solid #a855f7; width: 70%; left: 10%; }
+  /* CANLI OYNATMA ÇİZGİSİ */
+  .playhead {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--red);
+    left: 80px;
+    z-index: 10;
+    pointer-events: none;
+    transition: left 0.1s linear;
+  }
+  .playhead::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -4px;
+    width: 10px; height: 10px;
+    background: var(--red);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
 
-  .narration-footer { height: 44px; background: #05070a; border-top: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 16px; gap: 10px; font-size: 11.5px; color: var(--gold); }
-  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red-accent); animation: blink 1s infinite; }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .t-row { height: 24px; display: flex; align-items: center; }
+  .t-label { width: 75px; font-size: 9px; font-weight: 800; color: var(--muted); text-align: right; padding-right: 8px; }
+  .t-lane { flex: 1; height: 100%; background: #0c101a; position: relative; border-radius: 3px; }
+  .t-block {
+    position: absolute;
+    top: 10%; height: 80%;
+    border-radius: 3px;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .b-v1 { background: #1e3a8a; border: 1px solid #3b82f6; width: 50%; left: 80px; }
+  .b-v2 { background: #065f46; border: 1px solid #10b981; width: 35%; left: 360px; }
+  .b-a1 { background: #581c87; border: 1px solid #a855f7; width: 75%; left: 80px; }
 </style>
 </head>
 <body>
 
-<div class="top-header">
-  <div class="brand-area">
-    <span class="brand-logo">𓄂𓆃</span>
-    <span class="brand-text">EKOKŌ MEDIA AI STUDIO PRO</span>
+<div class="top-bar">
+  <div class="brand">
+    <span>𓄂𓆃</span>
+    EKOKŌ MEDIA AI STUDIO PRO
+    <span class="badge-engine">STUDIO MASTER</span>
   </div>
-  <button class="btn-sim-start" id="masterBtn" onclick="toggleSim()">🎬 SUNUMU BAŞLAT</button>
+  <button class="btn-run" id="masterBtn" onclick="togglePlayback()">🎬 SUNUMU BAŞLAT</button>
 </div>
 
-<div class="main-app">
-  <div class="left-nav">
-    <div class="nav-btn" id="nav-home">🏠 Ana Sayfa</div>
-    <div class="nav-btn" id="nav-proj">📁 Projeler</div>
-    <div class="nav-btn" id="nav-work">✂️ Üretim Atölyesi</div>
-    <div class="nav-btn" id="nav-chat">💬 AI Sohbet</div>
-    <div class="nav-btn active" id="nav-area">🎛️ Üretim Alanı</div>
-    <div class="nav-btn" id="nav-dream">🌌 Hayal Dünyası</div>
-    <div class="nav-btn" id="nav-crit">⚖️ Eleştiri Masası</div>
-    <div class="nav-btn" id="nav-lib">📚 Kütüphane</div>
+<div class="workspace">
+  <div class="sidebar">
+    <div class="side-item active" id="menu-1">🎛️ Üretim Alanı</div>
+    <div class="side-item" id="menu-2">📁 Projeler</div>
+    <div class="side-item" id="menu-3">✂️ Montaj Masası</div>
+    <div class="side-item" id="menu-4">💬 AI Yönetmen</div>
+    <div class="side-item" id="menu-5">⚖️ Eleştiri Masası</div>
   </div>
 
   <div class="center-stage">
-    <div class="center-top-tabs">
-      <button class="tab-btn active">Düzenle</button>
-      <button class="tab-btn">Renk</button>
-      <button class="tab-btn">Ses</button>
-      <button class="tab-btn">Metin</button>
-      <button class="tab-btn">Efekt</button>
-      <button class="tab-btn">Geçiş</button>
-      <button class="tab-btn" style="color:var(--gold);">Yapay Zeka</button>
-    </div>
-
-    <div class="center-middle">
-      <div class="media-library">
-        <div style="font-size:11px;font-weight:bold;">Medya Kütüphanesi</div>
-        <div class="lib-grid">
-          <div class="lib-item"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200"><div class="lib-item-title">Cilo_001.mp4</div></div>
-          <div class="lib-item"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200"><div class="lib-item-title">Doga.mp4</div></div>
-          <div class="lib-item"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=200"><div class="lib-item-title">TersLale.mp4</div></div>
-          <div class="lib-item"><img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=200"><div class="lib-item-title">Göl.mp4</div></div>
+    <div class="monitor-wrapper">
+      <div class="main-monitor">
+        <div class="monitor-hud">
+          <div class="hud-rec"><span class="hud-dot"></span> CANLI KURGU</div>
+          <div id="hudTc">00:00:00:00</div>
+          <div>DCI 4K // 24 FPS</div>
+        </div>
+        <div class="subtitles-box">
+          <h2 id="hudTitle">EKOKŌ MEDIA AI STUDIO PRO</h2>
+          <p id="hudText">Sunumu başlatmak için sağ üstteki butona dokunun.</p>
         </div>
       </div>
-
-      <div class="monitor-panel">
-        <div class="monitor-display">
-          <div class="quote-box">
-            <h2 id="monitorQuote">“Daha iyi bir yarın, daha güzel hikayeler…”</h2>
-            <span>- EKOKŌ MEDIA AI STUDIO PRO</span>
-          </div>
-        </div>
-        <div class="monitor-controls">
-          <span>00:00:12:17 / 00:02:54:08</span>
-          <span id="hudScene">BÖLÜM 1: BÜYÜK VİZYON</span>
-          <span>4K UHD | 24 FPS</span>
-        </div>
-      </div>
-
-      <div class="right-panel">
-        <div style="font-size:10px;font-weight:bold;text-transform:uppercase;">Araçlar</div>
-        <div class="tools-grid">
-          <div class="tool-box">Kes</div>
-          <div class="tool-box">Kırp</div>
-          <div class="tool-box">Hız</div>
-          <div class="tool-box">Ters</div>
-          <div class="tool-box">Maske</div>
-          <div class="tool-box">Sahne</div>
-          <div class="tool-box">Vokal</div>
-          <div class="tool-box">Sabitle</div>
-        </div>
-        <div style="font-size:10px;font-weight:bold;text-transform:uppercase;">Özellikler</div>
-        <div class="properties-box">
-          <div class="prop-row"><span>Katarsis Analizi</span><strong style="color:var(--cyan);">97.8%</strong></div>
-          <div class="prop-row"><span>Ses Senkron</span><strong style="color:var(--gold);">Kilitli</strong></div>
-          <div class="prop-row"><span>Optik Gren</span><strong>35mm</strong></div>
-        </div>
+      <div class="vu-meter-panel">
+        <div class="vu-bar"><div class="vu-fill" id="vuFill"></div></div>
       </div>
     </div>
 
-    <div class="timeline-area">
-      <div class="timeline-toolbar"><span>Kurgu Kanalları (NLE)</span><span>00:00 - 01:10</span></div>
-      <div class="timeline-tracks">
-        <div class="t-track"><span class="t-name">Video 2</span><div class="t-lane"><div class="t-clip clip-v2" id="clipBroll">Doğanın Sesi_Broll</div></div></div>
-        <div class="t-track"><span class="t-name">Video 1</span><div class="t-lane"><div class="t-clip clip-v1" id="clipMaster">Cilo'nun İzinde (Master)</div></div></div>
-        <div class="t-track"><span class="t-name">Ses 1</span><div class="t-lane"><div class="t-clip clip-a1">Diyalog & Bas EBU</div></div></div>
+    <div class="timeline">
+      <div class="timeline-bar">
+        <span>MASTER ZAMAN ÇİZELGESİ (NLE)</span>
+        <span>SENKRON: KİLİTLİ</span>
       </div>
+      <div class="tracks-container">
+        <div class="playhead" id="playhead"></div>
+        <div class="t-row"><span class="t-label">V2 B-Roll</span><div class="t-lane"><div class="t-block b-v2">Cilo_Doga.mp4</div></div></div>
+        <div class="t-row"><span class="t-label">V1 Master</span><div class="t-lane"><div class="t-block b-v1">Cilo_Buzullar_4K.mp4</div></div></div>
+        <div class="t-row"><span class="t-label">A1 Reji Ses</span><div class="t-lane"><div class="t-block b-a1">Ses_Master_EBU.wav</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-details">
+    <div class="panel-header">Kurgu Parametreleri</div>
+    <div class="spec-card">
+      <div class="spec-row"><span>Ses Dili</span><strong style="color:var(--gold);">Türkçe (Doğal)</strong></div>
+      <div class="spec-row"><span>Katarsis</span><strong style="color:var(--cyan);">97.8%</strong></div>
+      <div class="spec-row"><span>Ses Standardı</span><strong>-14 LUFS</strong></div>
     </div>
   </div>
 </div>
 
-<div class="narration-footer">
-  <span class="pulse-dot"></span>
-  <span id="teleText">Sunumu başlatmak için sağ üstteki '🎬 SUNUMU BAŞLAT' butonuna tıklayın.</span>
-</div>
-
 <script>
-let isPlaying = false;
-let currentScene = 0;
+let isRunning = false;
+let currentChapter = 0;
 let synth = window.speechSynthesis;
-let maleVoice = null;
+let vuInterval = null;
+let playheadX = 80;
 
-// Doğal Erkek Türkçe sesini filtreleme
+const scriptData = [
+  {
+    menu: "menu-1",
+    title: "BÖLÜM 1: BÜYÜK VİZYON",
+    speech: "Geleneksel dünyada bir fikir doğduğunda; araştırma, metin yazımı, görsel tasarım, ses ve kurgu için zihin onlarca farklı programa bölünürdü. Bu dağınıklık ilhamın ateşiyle eserin kendisi arasına soğuk duvarlar örer. Ekoko Medya Yapay Zeka Stüdyo Pro bu duvarları temelinden yıkmak için inşa edildi. Artık araçların esiri bir operatör değil, vizyonunu yöneten bir sanatçısınız."
+  },
+  {
+    menu: "menu-2",
+    title: "BÖLÜM 2: CANLI HAFIZA VE PROJELER",
+    speech: "Projeler odası durağan bir dosya deposu değildir; karakterlerin ruhunu, renk felsefesini ve anlatının üslubunu tanıyan yaşayan bir hafızadır. Bir eser aylar sonra açılsa bile yaratıcı tutarlılık ve estetik ahenk hiçbir zaman kaybolmaz."
+  },
+  {
+    menu: "menu-3",
+    title: "BÖLÜM 3: ÜRETİM ATÖLYESİ VE KURGU",
+    speech: "Üretim Atölyesi, zamanın akışına duygu dokunan bir sanat tezgahıdır. İster coşkulu bir ritim, ister belgeselin saf hakikati olsun; sahneler arası geçişler hazır şablonlarla değil, kusursuz bir şiirin mısraları gibi birbirine kenetlenir."
+  },
+  {
+    menu: "menu-4",
+    title: "BÖLÜM 4: BİLİŞSEL REJİ YÖNETMENİ",
+    speech: "Bilişsel Yönetmen, tek başına çalışan bir yaratıcının karşısına bilge bir reji ortağı olarak oturur. Sahnenin dramatik etkisini artır dediğinizde, fikri çoğaltır, derinleştirir ve tüm mecralarda en yüksek sinematik standartta kurgular."
+  },
+  {
+    menu: "menu-5",
+    title: "BÖLÜM 5: ELEŞTİRİ MASASI VE GEWER AI",
+    speech: "Eleştiri Masası, eserin insan ruhundaki yankısını daha yayınlanmadan ölçen tarafsız bir aynadır. Ve yakında bu çatıya dahil olacak kültürel çekirdeğimiz Gever Ay; kadim sözlü hafızamızı ve dengbejlik geleneğini dijital çağın ekranlarına taşıma bilincidir."
+  }
+];
+
 function pickMaleVoice() {
   const voices = synth.getVoices();
   const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
+  
+  let male = trVoices.find(v => {
+    const n = v.name.toLowerCase();
+    return (n.includes('male') || n.includes('erkek') || n.includes('ahmet') || n.includes('tolga') || n.includes('cem') || n.includes('bariton') || n.includes('standard-b') || n.includes('wavenet-b')) && !n.includes('female');
+  });
 
-  // Erkek ses tanımlayıcılarını önceliklendir
-  maleVoice = trVoices.find(v => {
-    const name = v.name.toLowerCase();
-    return name.includes('male') || name.includes('erkek') || name.includes('ahmet') || name.includes('tolga') || name.includes('cem') || name.includes('standard-b') || name.includes('wavenet-b');
-  }) || trVoices[0] || null;
+  return male || trVoices[0] || null;
 }
 
 if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = pickMaleVoice;
 }
 
-const chapters = [
-  {
-    nav: 'nav-area',
-    hud: "BÖLÜM 1: BÜYÜK VİZYON",
-    quote: "“Parçalanmış Dünyadan Tek Yaratıcı Merkeze.”",
-    text: "Geleneksel dünyada bir fikir doğduğunda; araştırma, metin yazımı, görsel tasavvur, ses tasarımı ve kurgu için zihin onlarca farklı araca bölünür. Bu dağınıklık, ilhamın ateşiyle eserin nihai hali arasına soğuk duvarlar örer. Ekoko Medya Yapay Zeka Stüdyo Pro, bu duvarları tamamen yıkmak için doğdu. Geleceğin dünyasında soru hangi kurgu aracını kullandın olmayacak; soru bunu Ekoko ile mi ürettin olacaktır."
-  },
-  {
-    nav: 'nav-home',
-    hud: "BÖLÜM 2: ANA SAYFA VE PROJELER",
-    quote: "“Yaşayan Eser Evreni ve Canlı Hafıza.”",
-    text: "Ana Sayfa stüdyonun kalbidir; tek bir cümlenin, bir düğün anısının veya doğadan gelen bir esintinin dev bir prodüksiyona dönüştüğü başlangıç noktasıdır. Projeler odası ise durağan bir dosya arşivi değil; karakterlerin kimliğini, renklerin felsefesini ve anlatının üslubunu tanıyan canlı bir hafızadır."
-  },
-  {
-    nav: 'nav-work',
-    hud: "BÖLÜM 3: ÜRETİM ATÖLYESİ",
-    quote: "“Zamanın ve Estetiğin Tuvali.”",
-    text: "Üretim Atölyesi, zamanın akışına duygu dokunan bir sanat tezgahıdır. İster coşkulu bir düğün halayı olsun, ister modern bir video akışı; sahneler arası geçişler sıradan hazır şablonlarla değil, bir şiirin mısraları gibi birbirini tamamlayan kusursuz bir ritimle birleşir."
-  },
-  {
-    nav: 'nav-chat',
-    hud: "BÖLÜM 4: BİLİŞSEL YÖNETMEN",
-    quote: "“İki Zihnin Canlı Diyaloğu: AI Director.”",
-    text: "Bilişsel Yönetmen, yalnız bir sanatçının karşısında oturan bilge bir reji ortağıdır. Yönetmen sahnenin duygusunu yükselt dediğinde, Ekoko o fikri sanatsal alternatiflerle çoğaltır, derinleştirir ve tüm mecralarda en yüksek standardı üretir."
-  },
-  {
-    nav: 'nav-crit',
-    hud: "BÖLÜM 5: ELEŞTİRİ MASASI VE GEWER AI",
-    quote: "“%97.8 Katarsis ve Kültürel Hafıza.”",
-    text: "Eleştiri Masası eserin insan ruhundaki yankısını henüz yayınlanmadan önce simüle eden tarafsız bir aynadır. Ve yakında bu çatı altında yer alacak bağımsız kültürel çekirdeğimiz Gever Ay; dengbejlerin nefesini ve kadim mirasımızı dijital çağın ekranlarına taşıma bilincidir."
-  }
-];
+function startVisualMeters() {
+  vuInterval = setInterval(() => {
+    if (!isRunning) return;
+    const vu = document.getElementById('vuFill');
+    vu.style.height = (Math.floor(Math.random() * 60) + 30) + '%';
 
-function runChapter(idx) {
-  if (idx >= chapters.length) {
-    isPlaying = false;
+    playheadX += 2;
+    if (playheadX > window.innerWidth - 280) playheadX = 80;
+    document.getElementById('playhead').style.left = playheadX + 'px';
+  }, 80);
+}
+
+function playChapter(idx) {
+  if (idx >= scriptData.length) {
+    isRunning = false;
+    clearInterval(vuInterval);
     document.getElementById('masterBtn').innerText = "YENİDEN BAŞLAT";
-    document.getElementById('teleText').innerText = "Sunum başarıyla tamamlandı.";
+    document.getElementById('hudText').innerText = "Sunum tamamlandı.";
     return;
   }
 
-  currentScene = idx;
-  const item = chapters[idx];
+  currentChapter = idx;
+  const data = scriptData[idx];
 
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const targetNav = document.getElementById(item.nav);
-  if (targetNav) targetNav.classList.add('active');
+  document.querySelectorAll('.side-item').forEach(el => el.classList.remove('active'));
+  const activeSide = document.getElementById(data.menu);
+  if (activeSide) activeSide.classList.add('active');
 
-  document.getElementById('hudScene').innerText = item.hud;
-  document.getElementById('monitorQuote').innerText = item.quote;
-  document.getElementById('teleText').innerText = item.text;
-
-  document.getElementById('clipMaster').style.transform = `translateX(${(idx * 25) % 80}px)`;
-  document.getElementById('clipBroll').style.transform = `translateX(-${(idx * 20) % 60}px)`;
+  document.getElementById('hudTitle').innerText = data.title;
+  document.getElementById('hudText').innerText = data.speech;
 
   synth.cancel();
-  const ut = new SpeechSynthesisUtterance(item.text);
+  const ut = new SpeechSynthesisUtterance(data.speech);
   
-  if (!maleVoice) pickMaleVoice();
-  if (maleVoice) ut.voice = maleVoice;
+  const mVoice = pickMaleVoice();
+  if (mVoice) ut.voice = mVoice;
 
   ut.lang = 'tr-TR';
-  ut.rate = 1.05;  // Ağır çekim hissini bitiren, akıcı ve dinamik normal insan temposu
-  ut.pitch = 0.88; // Sesi daha tok, olgun ve reji tonunda erkek kılan frekans ayarı
+  ut.rate = 1.0;
+  ut.pitch = 0.8;
 
-  ut.onend = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 600); };
-  ut.onerror = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 600); };
+  ut.onend = () => { if (isRunning) setTimeout(() => playChapter(idx + 1), 600); };
+  ut.onerror = () => { if (isRunning) setTimeout(() => playChapter(idx + 1), 600); };
+
   synth.speak(ut);
 }
 
-function toggleSim() {
-  if (isPlaying) {
-    isPlaying = false;
+function togglePlayback() {
+  if (isRunning) {
+    isRunning = false;
     synth.cancel();
+    clearInterval(vuInterval);
     document.getElementById('masterBtn').innerText = "DEVAM ET";
     return;
   }
-  isPlaying = true;
+  isRunning = true;
   document.getElementById('masterBtn').innerText = "DURAKLAT";
-  runChapter(0);
+  startVisualMeters();
+  playChapter(0);
 }
 </script>
 
