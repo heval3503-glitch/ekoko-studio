@@ -40,7 +40,6 @@
     position: relative;
   }
 
-  /* ÜST BAR VE DİL SEÇİCİ */
   .top-bar {
     display: flex;
     align-items: center;
@@ -61,7 +60,6 @@
   
   .header-actions { display: flex; align-items: center; gap: 8px; }
   
-  /* DİL DEĞİŞTİRME BUTONU (TR | KU) */
   .lang-toggle-btn {
     background: rgba(0, 0, 0, 0.55);
     border: 1px solid var(--gold);
@@ -110,7 +108,6 @@
   .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 12.5px; font-weight: 500; }
   .mic-icon { font-size: 15px; }
 
-  /* 10'LU MODÜL IZGARASI */
   .modules-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -147,7 +144,6 @@
   .m-label { font-size: 10px; font-weight: 700; color: #fff; text-align: center; }
   .card-center-bot { grid-column: 2; }
 
-  /* SİNEMATİK ALTYAZI ÇUBUĞU */
   .subtitle-container {
     background: rgba(5, 7, 12, 0.9);
     backdrop-filter: blur(16px);
@@ -166,7 +162,6 @@
   .subtitle-text { font-size: 11px; font-weight: 600; line-height: 1.4; color: #ffffff; text-align: center; }
   .sub-word-active { color: var(--gold); font-weight: 800; text-shadow: 0 0 8px rgba(250, 204, 21, 0.8); }
 
-  /* ALT DOCK */
   .bottom-dock {
     height: 60px;
     background: rgba(10, 14, 24, 0.94);
@@ -211,7 +206,6 @@
 
 <div class="mobile-screen">
   
-  <!-- ÜST BAR & DİL TUŞU -->
   <div class="top-bar">
     <div class="brand-left">
       <div class="logo-circle">𓄂𓆃</div>
@@ -225,13 +219,11 @@
     </div>
   </div>
 
-  <!-- BAŞLIK ALANI -->
   <div class="greeting-section">
     <h1 id="ui-greet">Merhaba!</h1>
     <p id="ui-question">Bugün ne üretmek istersin?</p>
   </div>
 
-  <!-- ARAMA ALANI -->
   <div class="search-pill" onclick="togglePresentation()">
     <div class="search-left">
       <span>🔍</span>
@@ -240,7 +232,6 @@
     <div class="mic-icon">🎙️</div>
   </div>
 
-  <!-- 10 MODÜL BUTONU -->
   <div class="modules-grid">
     <div class="m-card neon-pink" id="c-proj">
       <div class="m-icon">📁</div>
@@ -287,7 +278,6 @@
     </div>
   </div>
 
-  <!-- SİNEMATİK ALTYAZI -->
   <div class="subtitle-container" id="subBox">
     <span class="sub-icon">💬</span>
     <div class="subtitle-text" id="subText">
@@ -295,7 +285,6 @@
     </div>
   </div>
 
-  <!-- ALT MENÜ -->
   <div class="bottom-dock">
     <div class="dock-item active">
       <div class="dock-icon">🏠</div>
@@ -321,14 +310,13 @@
 </div>
 
 <script>
-let currentLang = 'TR'; // 'TR' veya 'KU'
+let currentLang = 'TR';
 let isRunning = false;
 let currentAudio = null;
 let wordTimer = null;
 let synth = window.speechSynthesis;
-let ahmetVoice = null;
+let naturalMaleVoice = null;
 
-// TÜRKÇE VE KÜRTÇE ARAYÜZ SÖZLÜĞÜ
 const UI_TEXTS = {
   TR: {
     home: "Ana Sayfa",
@@ -370,7 +358,6 @@ const UI_TEXTS = {
   }
 };
 
-// SESLENDIRME VE ALTYAZI VERİLERİ
 const SPEECH_DATA = {
   TR: [
     {
@@ -414,9 +401,8 @@ const SPEECH_DATA = {
   ]
 };
 
-// DİL DEĞİŞTİRME MEKANİZMASI
 function toggleLanguage() {
-  if (isRunning) togglePresentation(); // Çalıyorsa durdur
+  if (isRunning) togglePresentation();
 
   currentLang = (currentLang === 'TR') ? 'KU' : 'TR';
   const t = UI_TEXTS[currentLang];
@@ -448,25 +434,27 @@ function toggleLanguage() {
   document.getElementById('subText').innerText = t.subDefault;
 }
 
-// TÜRKÇE AHMET / ERKEK SES FİLTRESİ
-function bindAhmetVoice() {
+// DOĞAL ERKEK SESİ MOTORU (Robotik Değil, Standart İnsan Frekansı)
+function bindNaturalVoice() {
   const voices = synth.getVoices();
   const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
-  const nonFemale = trVoices.filter(v => {
+  
+  const maleVoices = trVoices.filter(v => {
     const n = v.name.toLowerCase();
     return !n.includes('female') && !n.includes('kadın') && !n.includes('yelda') && !n.includes('seda') && !n.includes('zeynep');
   });
 
-  ahmetVoice = nonFemale.find(v => {
+  // Doğal / Neural erkek paketlerini öncelikle seç
+  naturalMaleVoice = maleVoices.find(v => {
     const n = v.name.toLowerCase();
-    return n.includes('ahmet') || n.includes('male') || n.includes('erkek') || n.includes('tolga') || n.includes('cem') || n.includes('tr-tr-x-dfz#male');
-  }) || nonFemale[0] || trVoices[0] || null;
-}
-if (speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = bindAhmetVoice;
+    return n.includes('natural') || n.includes('neural') || n.includes('ahmet') || n.includes('cem') || n.includes('tolga') || n.includes('male');
+  }) || maleVoices[0] || trVoices[0] || null;
 }
 
-// KELİME KELİME PARLAMA SENKRONİZASYONU
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = bindNaturalVoice;
+}
+
 function highlightWords(text, durationSec) {
   clearInterval(wordTimer);
   const words = text.split(' ');
@@ -488,7 +476,6 @@ function highlightWords(text, durationSec) {
   }, intervalMs);
 }
 
-// SUNUMU ADIM ADIM ÇAL
 function playStep(idx) {
   const list = SPEECH_DATA[currentLang];
   if (idx >= list.length) {
@@ -508,7 +495,6 @@ function playStep(idx) {
   const subBox = document.getElementById('subBox');
   subBox.classList.add('talking');
 
-  // --- KÜRTÇE MODU (BADÎNÎ MP3) ---
   if (currentLang === 'KU') {
     if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
     currentAudio = new Audio(step.audio);
@@ -526,18 +512,19 @@ function playStep(idx) {
       clearInterval(wordTimer);
       if (isRunning) setTimeout(() => playStep(idx + 1), 600);
     };
-  } 
-  // --- TÜRKÇE MODU (AHMET / ERKEK TTS) ---
-  else {
+  } else {
     synth.cancel();
     const ut = new SpeechSynthesisUtterance(step.text);
-    if (!ahmetVoice) bindAhmetVoice();
-    if (ahmetVoice) ut.voice = ahmetVoice;
+    if (!naturalMaleVoice) bindNaturalVoice();
+    if (naturalMaleVoice) ut.voice = naturalMaleVoice;
+    
     ut.lang = 'tr-TR';
-    ut.rate = 1.0;
-    ut.pitch = 0.70; // Tok bas rezonans
+    
+    // Doğal, robotik olmayan insan tonu parametreleri:
+    ut.rate = 1.02;  // Akıcı, duraksamayan diksiyon hızı
+    ut.pitch = 0.96; // 0.70'lik mekanik kalınlık kaldırıldı, doğal erkek konuşma frekansına çekildi
 
-    const estDuration = (step.text.split(' ').length * 360) / 1000;
+    const estDuration = (step.text.split(' ').length * 340) / 1000;
     highlightWords(step.text, estDuration);
 
     ut.onend = () => {
