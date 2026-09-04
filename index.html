@@ -239,16 +239,22 @@
 let isPlaying = false;
 let currentScene = 0;
 let synth = window.speechSynthesis;
-let bestVoice = null;
+let maleVoice = null;
 
-function findVoice() {
+// Doğal Erkek Türkçe sesini filtreleme
+function pickMaleVoice() {
   const voices = synth.getVoices();
-  bestVoice = voices.find(v => v.lang.includes('tr') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Yelda')))
-           || voices.find(v => v.lang.includes('tr'))
-           || null;
+  const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
+
+  // Erkek ses tanımlayıcılarını önceliklendir
+  maleVoice = trVoices.find(v => {
+    const name = v.name.toLowerCase();
+    return name.includes('male') || name.includes('erkek') || name.includes('ahmet') || name.includes('tolga') || name.includes('cem') || name.includes('standard-b') || name.includes('wavenet-b');
+  }) || trVoices[0] || null;
 }
+
 if (speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = findVoice;
+  speechSynthesis.onvoiceschanged = pickMaleVoice;
 }
 
 const chapters = [
@@ -256,31 +262,31 @@ const chapters = [
     nav: 'nav-area',
     hud: "BÖLÜM 1: BÜYÜK VİZYON",
     quote: "“Parçalanmış Dünyadan Tek Yaratıcı Merkeze.”",
-    text: "Geleneksel dünyada bir fikir doğduğunda; araştırma, metin yazımı, görsel tasavvur, ses tasarımı ve kurgu için zihin onlarca farklı araca bölünür. Bu dağınıklık, ilhamın ateşiyle eserin nihai hali arasına soğuk duvarlar örer. Ekoko Medya Yapay Zeka Stüdyo Pro, bu duvarları yıkmak için doğdu. Geleceğin dünyasında soru hangi kurgu aracını kullandın olmayacak; soru bunu Ekoko ile mi ürettin olacaktır."
+    text: "Geleneksel dünyada bir fikir doğduğunda; araştırma, metin yazımı, görsel tasavvur, ses tasarımı ve kurgu için zihin onlarca farklı araca bölünür. Bu dağınıklık, ilhamın ateşiyle eserin nihai hali arasına soğuk duvarlar örer. Ekoko Medya Yapay Zeka Stüdyo Pro, bu duvarları tamamen yıkmak için doğdu. Geleceğin dünyasında soru hangi kurgu aracını kullandın olmayacak; soru bunu Ekoko ile mi ürettin olacaktır."
   },
   {
     nav: 'nav-home',
     hud: "BÖLÜM 2: ANA SAYFA VE PROJELER",
     quote: "“Yaşayan Eser Evreni ve Canlı Hafıza.”",
-    text: "Ana Sayfa stüdyonun kalbidir; tek bir cümlenin, bir düğün anısının veya doğadan gelen bir esintinin koca bir yapıma dönüştüğü başlangıç noktasıdır. Projeler odası ise durağan bir dosya arşivi değil; karakterlerin kimliğini, renklerin felsefesini ve anlatının üslubunu tanıyan canlı bir hafızadır."
+    text: "Ana Sayfa stüdyonun kalbidir; tek bir cümlenin, bir düğün anısının veya doğadan gelen bir esintinin dev bir prodüksiyona dönüştüğü başlangıç noktasıdır. Projeler odası ise durağan bir dosya arşivi değil; karakterlerin kimliğini, renklerin felsefesini ve anlatının üslubunu tanıyan canlı bir hafızadır."
   },
   {
     nav: 'nav-work',
     hud: "BÖLÜM 3: ÜRETİM ATÖLYESİ",
     quote: "“Zamanın ve Estetiğin Tuvali.”",
-    text: "Üretim Atölyesi, zamanın akışına duygu dokunan bir sanat tezgahıdır. İster coşkulu bir düğün halayı olsun, ister modern bir video akışı; sahneler arası geçişler sıradan hazır şablonlarla değil, bir şiirin mısraları gibi birbirini tamamlayan kusursuz bir uyumla birleşir."
+    text: "Üretim Atölyesi, zamanın akışına duygu dokunan bir sanat tezgahıdır. İster coşkulu bir düğün halayı olsun, ister modern bir video akışı; sahneler arası geçişler sıradan hazır şablonlarla değil, bir şiirin mısraları gibi birbirini tamamlayan kusursuz bir ritimle birleşir."
   },
   {
     nav: 'nav-chat',
     hud: "BÖLÜM 4: BİLİŞSEL YÖNETMEN",
     quote: "“İki Zihnin Canlı Diyaloğu: AI Director.”",
-    text: "Bilişsel Yönetmen, yalnız bir sanatçının karşısında oturan bilge bir reji ortağıdır. Yönetmen düğün videosunun girişini daha duygusal kıl der; Ekoko o fikri sanatsal alternatiflerle çoğaltır, derinleştirir ve on dört sektörel üretim odasında en yüksek standardı üretir."
+    text: "Bilişsel Yönetmen, yalnız bir sanatçının karşısında oturan bilge bir reji ortağıdır. Yönetmen sahnenin duygusunu yükselt dediğinde, Ekoko o fikri sanatsal alternatiflerle çoğaltır, derinleştirir ve tüm mecralarda en yüksek standardı üretir."
   },
   {
     nav: 'nav-crit',
     hud: "BÖLÜM 5: ELEŞTİRİ MASASI VE GEWER AI",
     quote: "“%97.8 Katarsis ve Kültürel Hafıza.”",
-    text: "Eleştiri Masası eserin insan ruhundaki yankısını henüz yayınlanmadan önce simüle eden tarafsız bir aynadır. Ve yakında bu çatı altında yer alacak bağımsız kültürel çekirdeğimiz: Gever Ay. Dengbejlerin nefesini ve kadim mirasımızı dijital çağın ekranlarına taşıma bilincidir."
+    text: "Eleştiri Masası eserin insan ruhundaki yankısını henüz yayınlanmadan önce simüle eden tarafsız bir aynadır. Ve yakında bu çatı altında yer alacak bağımsız kültürel çekirdeğimiz Gever Ay; dengbejlerin nefesini ve kadim mirasımızı dijital çağın ekranlarına taşıma bilincidir."
   }
 ];
 
@@ -308,14 +314,16 @@ function runChapter(idx) {
 
   synth.cancel();
   const ut = new SpeechSynthesisUtterance(item.text);
-  if (!bestVoice) findVoice();
-  if (bestVoice) ut.voice = bestVoice;
-  ut.lang = 'tr-TR';
-  ut.rate = 0.94;
-  ut.pitch = 0.98;
+  
+  if (!maleVoice) pickMaleVoice();
+  if (maleVoice) ut.voice = maleVoice;
 
-  ut.onend = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 700); };
-  ut.onerror = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 700); };
+  ut.lang = 'tr-TR';
+  ut.rate = 1.05;  // Ağır çekim hissini bitiren, akıcı ve dinamik normal insan temposu
+  ut.pitch = 0.88; // Sesi daha tok, olgun ve reji tonunda erkek kılan frekans ayarı
+
+  ut.onend = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 600); };
+  ut.onerror = () => { if (isPlaying) setTimeout(() => runChapter(idx + 1), 600); };
   synth.speak(ut);
 }
 
