@@ -31,7 +31,7 @@
     width: 100%;
     height: 100%;
     height: 100dvh;
-    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.82) 100%), 
+    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.85) 100%), 
                 url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
     display: flex;
     flex-direction: column;
@@ -40,11 +40,12 @@
     position: relative;
   }
 
+  /* ÜST BAR VE DİL SEÇİCİ */
   .top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 10px;
+    padding-top: 8px;
   }
   .brand-left { display: flex; align-items: center; gap: 10px; }
   .logo-circle {
@@ -58,20 +59,39 @@
   }
   .page-name { font-size: 17px; font-weight: 800; color: #fff; }
   
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  
+  /* DİL DEĞİŞTİRME BUTONU (TR | KU) */
+  .lang-toggle-btn {
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid var(--gold);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 18px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+  }
+  .lang-active { color: var(--gold); }
+
   .btn-bell {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(12px);
-    width: 36px; height: 36px;
+    width: 34px; height: 34px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 15px; color: #fff;
+    font-size: 14px; color: #fff;
     cursor: pointer;
   }
 
-  .greeting-section { margin-top: 6px; }
+  .greeting-section { margin-top: 4px; }
   .greeting-section h1 { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.15; }
-  .greeting-section p { font-size: 13.5px; font-weight: 600; color: #e2e8f0; margin-top: 3px; }
+  .greeting-section p { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-top: 3px; }
 
   .search-pill {
     height: 46px;
@@ -85,11 +105,12 @@
     padding: 0 16px;
     cursor: pointer;
     box-shadow: 0 4px 18px rgba(0,0,0,0.3);
-    margin: 8px 0;
+    margin: 6px 0;
   }
-  .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
+  .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 12.5px; font-weight: 500; }
   .mic-icon { font-size: 15px; }
 
+  /* 10'LU MODÜL IZGARASI */
   .modules-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -117,18 +138,18 @@
     box-shadow: 0 0 16px rgba(255,255,255,0.4) !important;
   }
 
-  .neon-pink { border-color: rgba(247, 37, 133, 0.65); box-shadow: inset 0 0 8px rgba(247, 37, 133, 0.15); }
-  .neon-purple { border-color: rgba(114, 9, 183, 0.75); box-shadow: inset 0 0 8px rgba(114, 9, 183, 0.2); }
-  .neon-cyan { border-color: rgba(76, 201, 240, 0.65); box-shadow: inset 0 0 8px rgba(76, 201, 240, 0.18); }
-  .neon-blue { border-color: rgba(58, 134, 255, 0.65); box-shadow: inset 0 0 8px rgba(58, 134, 255, 0.18); }
+  .neon-pink { border-color: rgba(247, 37, 133, 0.65); }
+  .neon-purple { border-color: rgba(114, 9, 183, 0.75); }
+  .neon-cyan { border-color: rgba(76, 201, 240, 0.65); }
+  .neon-blue { border-color: rgba(58, 134, 255, 0.65); }
 
   .m-icon { font-size: 19px; line-height: 1; }
-  .m-label { font-size: 10.5px; font-weight: 700; color: #fff; text-align: center; }
+  .m-label { font-size: 10px; font-weight: 700; color: #fff; text-align: center; }
   .card-center-bot { grid-column: 2; }
 
-  /* SİNEMATİK ALTYAZI ÇUBUĞU (SUBTITLE CONTAINER) */
+  /* SİNEMATİK ALTYAZI ÇUBUĞU */
   .subtitle-container {
-    background: rgba(5, 7, 12, 0.88);
+    background: rgba(5, 7, 12, 0.9);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
@@ -138,38 +159,17 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 6px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    transition: border-color 0.3s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
   }
-  .subtitle-container.talking {
-    border-color: rgba(250, 204, 21, 0.6);
-  }
-  .sub-icon {
-    font-size: 12px;
-    color: var(--gold);
-    margin-right: 8px;
-    flex-shrink: 0;
-    display: inline-block;
-  }
-  .subtitle-text {
-    font-size: 11.5px;
-    font-weight: 600;
-    line-height: 1.35;
-    color: #ffffff;
-    text-align: center;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-  }
-  .sub-word-active {
-    color: var(--gold);
-    font-weight: 800;
-    text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
-    transition: color 0.15s;
-  }
+  .subtitle-container.talking { border-color: rgba(250, 204, 21, 0.6); }
+  .sub-icon { font-size: 12px; color: var(--gold); margin-right: 8px; flex-shrink: 0; }
+  .subtitle-text { font-size: 11px; font-weight: 600; line-height: 1.4; color: #ffffff; text-align: center; }
+  .sub-word-active { color: var(--gold); font-weight: 800; text-shadow: 0 0 8px rgba(250, 204, 21, 0.8); }
 
-  /* ALT DOCK BAR */
+  /* ALT DOCK */
   .bottom-dock {
-    height: 62px;
-    background: rgba(10, 14, 24, 0.92);
+    height: 60px;
+    background: rgba(10, 14, 24, 0.94);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 20px;
@@ -194,7 +194,7 @@
   .dock-icon { font-size: 17px; }
 
   .dock-plus {
-    width: 48px; height: 48px;
+    width: 46px; height: 46px;
     border-radius: 50%;
     background: linear-gradient(135deg, #ff2a4b, #bd0827);
     border: 3px solid rgba(10, 14, 24, 0.95);
@@ -202,7 +202,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 24px; color: #fff;
     cursor: pointer;
-    margin-top: -20px;
+    margin-top: -18px;
   }
   .dock-plus:active { transform: scale(0.92); }
 </style>
@@ -211,73 +211,83 @@
 
 <div class="mobile-screen">
   
+  <!-- ÜST BAR & DİL TUŞU -->
   <div class="top-bar">
     <div class="brand-left">
       <div class="logo-circle">𓄂𓆃</div>
-      <div class="page-name">Ana Sayfa</div>
+      <div class="page-name" id="ui-home">Ana Sayfa</div>
     </div>
-    <div class="btn-bell" onclick="toggleSpeech()">🔔</div>
+    <div class="header-actions">
+      <button class="lang-toggle-btn" onclick="toggleLanguage()">
+        🌐 <span id="langLabel"><span class="lang-active">TR</span> | KU</span>
+      </button>
+      <div class="btn-bell" onclick="togglePresentation()">🔔</div>
+    </div>
   </div>
 
+  <!-- BAŞLIK ALANI -->
   <div class="greeting-section">
-    <h1>Merhaba!</h1>
-    <p>Bugün ne üretmek istersin?</p>
+    <h1 id="ui-greet">Merhaba!</h1>
+    <p id="ui-question">Bugün ne üretmek istersin?</p>
   </div>
 
-  <div class="search-pill" onclick="toggleSpeech()">
+  <!-- ARAMA ALANI -->
+  <div class="search-pill" onclick="togglePresentation()">
     <div class="search-left">
       <span>🔍</span>
-      <span>Aklındaki fikri anlat...</span>
+      <span id="ui-search">Aklındaki fikri anlat...</span>
     </div>
     <div class="mic-icon">🎙️</div>
   </div>
 
+  <!-- 10 MODÜL BUTONU -->
   <div class="modules-grid">
     <div class="m-card neon-pink" id="c-proj">
       <div class="m-icon">📁</div>
-      <div class="m-label">Projeler</div>
+      <div class="m-label" id="lbl-proj">Projeler</div>
     </div>
     <div class="m-card neon-purple" id="c-prod">
       <div class="m-icon">✂️</div>
-      <div class="m-label">Üretim Atölyesi</div>
+      <div class="m-label" id="lbl-prod">Üretim Atölyesi</div>
     </div>
     <div class="m-card neon-cyan" id="c-chat">
       <div class="m-icon">💬</div>
-      <div class="m-label">AI Sohbet</div>
+      <div class="m-label" id="lbl-chat">AI Sohbet</div>
     </div>
 
     <div class="m-card neon-blue" id="c-field">
       <div class="m-icon">🎛️</div>
-      <div class="m-label">Üretim Alanı</div>
+      <div class="m-label" id="lbl-field">Üretim Alanı</div>
     </div>
     <div class="m-card neon-purple" id="c-dream">
       <div class="m-icon">🌌</div>
-      <div class="m-label">Hayal Dünyası</div>
+      <div class="m-label" id="lbl-dream">Hayal Dünyası</div>
     </div>
     <div class="m-card neon-purple" id="c-comp">
       <div class="m-icon">🏆</div>
-      <div class="m-label">Yarışmalar</div>
+      <div class="m-label" id="lbl-comp">Yarışmalar</div>
     </div>
 
     <div class="m-card neon-blue" id="c-crit">
       <div class="m-icon">⚖️</div>
-      <div class="m-label">Eleştiri Masası</div>
+      <div class="m-label" id="lbl-crit">Eleştiri Masası</div>
     </div>
     <div class="m-card neon-cyan" id="c-lib">
       <div class="m-icon">📚</div>
-      <div class="m-label">Kütüphane</div>
+      <div class="m-label" id="lbl-lib">Kütüphane</div>
     </div>
     <div class="m-card neon-blue" id="c-media">
       <div class="m-icon">🗂️</div>
-      <div class="m-label">Medya</div>
+      <div class="m-label" id="lbl-media">Medya</div>
     </div>
 
     <div class="m-card neon-blue card-center-bot" id="c-sett">
       <div class="m-icon">⚙️</div>
-      <div class="m-label">Ayarlar</div>
+      <div class="m-label" id="lbl-sett">Ayarlar</div>
     </div>
   </div>
 
+  <!-- SİNEMATİK ALTYAZI -->
   <div class="subtitle-container" id="subBox">
     <span class="sub-icon">💬</span>
     <div class="subtitle-text" id="subText">
@@ -285,56 +295,160 @@
     </div>
   </div>
 
+  <!-- ALT MENÜ -->
   <div class="bottom-dock">
     <div class="dock-item active">
       <div class="dock-icon">🏠</div>
-      <span>Ana Sayfa</span>
+      <span id="dock-home">Ana Sayfa</span>
     </div>
     <div class="dock-item">
       <div class="dock-icon">📁</div>
-      <span>Projeler</span>
+      <span id="dock-proj">Projeler</span>
     </div>
 
-    <div class="dock-plus" onclick="toggleSpeech()">+</div>
+    <div class="dock-plus" onclick="togglePresentation()">+</div>
 
     <div class="dock-item">
       <div class="dock-icon">📚</div>
-      <span>Kütüphane</span>
+      <span id="dock-lib">Kütüphane</span>
     </div>
     <div class="dock-item">
       <div class="dock-icon">⚙️</div>
-      <span>Ayarlar</span>
+      <span id="dock-sett">Ayarlar</span>
     </div>
   </div>
 
 </div>
 
 <script>
-let isPlaying = false;
+let currentLang = 'TR'; // 'TR' veya 'KU'
+let isRunning = false;
+let currentAudio = null;
+let wordTimer = null;
 let synth = window.speechSynthesis;
 let ahmetVoice = null;
-let subtitleTimer = null;
 
-const narrative = [
-  {
-    target: 'c-prod',
-    text: "Ekoko Medya Yapay Zeka Stüdyosuna hoş geldiniz. Üretim Atölyesi, fikrin ilk anından montaj masasına kadar tüm süreci tek merkezde toplar."
+// TÜRKÇE VE KÜRTÇE ARAYÜZ SÖZLÜĞÜ
+const UI_TEXTS = {
+  TR: {
+    home: "Ana Sayfa",
+    greet: "Merhaba!",
+    question: "Bugün ne üretmek istersin?",
+    search: "Aklındaki fikri anlat...",
+    proj: "Projeler",
+    prod: "Üretim Atölyesi",
+    chat: "AI Sohbet",
+    field: "Üretim Alanı",
+    dream: "Hayal Dünyası",
+    comp: "Yarışmalar",
+    crit: "Eleştiri Masası",
+    lib: "Kütüphane",
+    media: "Medya",
+    sett: "Ayarlar",
+    subDefault: "Başlatmak için mikrofona veya kırmızı '+' tuşuna dokunun.",
+    subDone: "Sunum başarıyla tamamlandı.",
+    subStop: "Durduruldu."
   },
-  {
-    target: 'c-chat',
-    text: "Yapay Zeka Sohbet, sanatçının karşısında bilge bir reji ortağıdır. Siz fikrinizi anlatırsınız, o sahneleri kurar."
-  },
-  {
-    target: 'c-field',
-    text: "Üretim Alanı, zamanın akışına duygu dokunan profesyonel montaj tezgahıdır."
-  },
-  {
-    target: 'c-dream',
-    text: "Hayal Dünyası ve Gever Ay; kadim sözlü hafızamızı ve dengbejlik mirasını dijital çağa taşıma bilincidir."
+  KU: {
+    home: "Destpêk",
+    greet: "Silav!",
+    question: "Îro tu dixwazî çi biafirînî?",
+    search: "Ramana di mejiyê xwe de bêje...",
+    proj: "Projeyên Min",
+    prod: "Kargeha Çêkirinê",
+    chat: "AI Sohbet",
+    field: "Qada Karkirinê",
+    dream: "Cîhana Xeyalan",
+    comp: "Pêşbirk",
+    crit: "Maseya Rexneyê",
+    lib: "Pirtûkxane",
+    media: "Medya",
+    sett: "Mîheng",
+    subDefault: "Ji bo destpêkirinê li mîkrofonê an jî bişkoka sor (+) bixe.",
+    subDone: "Pêşkêşî bi serkeftî qediya.",
+    subStop: "Pêşkêşî sekinî."
   }
-];
+};
 
-// Ahmet / Erkek Ses Filtresi
+// SESLENDIRME VE ALTYAZI VERİLERİ
+const SPEECH_DATA = {
+  TR: [
+    {
+      target: 'c-prod',
+      text: "Ekoko Medya Yapay Zeka Stüdyosuna hoş geldiniz. Üretim Atölyesi, fikrin ilk anından montaj masasına kadar tüm süreci tek merkezde toplar."
+    },
+    {
+      target: 'c-chat',
+      text: "Yapay Zeka Sohbet, sanatçının karşısında bilge bir reji ortağıdır. Siz fikrinizi anlatırsınız, o sinematik sahneleri kurar."
+    },
+    {
+      target: 'c-field',
+      text: "Üretim Alanı, zamanın akışına duygu dokunan profesyonel montaj tezgahıdır."
+    },
+    {
+      target: 'c-dream',
+      text: "Hayal Dünyası ve Gever Ay; kadim sözlü hafızamızı ve dengbejlik mirasını dijital çağa taşıma bilincidir."
+    }
+  ],
+  KU: [
+    {
+      target: 'c-prod',
+      audio: 'ses1.mp3',
+      text: "Hûn bi xêr hatin stûdyoya Ekoko Medya. Ji bo afirandina vîdyoyan em her tiştî li vir kom dikin."
+    },
+    {
+      target: 'c-chat',
+      audio: 'ses2.mp3',
+      text: "Sohbeta Zekaya Çêkirî, wek derhênerekî jîr û zana li kêleka te ye. Tu tenê ramana xwe jê re bibêje; ew ê reng, hest û dîmenên te bi rengekî hunerî saz bike."
+    },
+    {
+      target: 'c-field',
+      audio: 'ses3.mp3',
+      text: "Qada Karkirinê, ew maseya pîşeyî ye ku dem û keda te lê dibe huner. Li vir parçeyên dîmenan bi hev re tên girêdan û çîroka te derdikeve ser dika sînemayê."
+    },
+    {
+      target: 'c-dream',
+      audio: 'ses4.mp3',
+      text: "Cîhana Xeyalan û hêza Gewer AI; bîra me ya kevnar, dengê dengbêjên me û kûrahiya çanda me tîne ser ekranên serdema nû. Sînor tune ye, tenê afirandin heye."
+    }
+  ]
+};
+
+// DİL DEĞİŞTİRME MEKANİZMASI
+function toggleLanguage() {
+  if (isRunning) togglePresentation(); // Çalıyorsa durdur
+
+  currentLang = (currentLang === 'TR') ? 'KU' : 'TR';
+  const t = UI_TEXTS[currentLang];
+
+  document.getElementById('langLabel').innerHTML = currentLang === 'TR' 
+    ? '<span class="lang-active">TR</span> | KU' 
+    : 'TR | <span class="lang-active">KU</span>';
+
+  document.getElementById('ui-home').innerText = t.home;
+  document.getElementById('dock-home').innerText = t.home;
+  document.getElementById('ui-greet').innerText = t.greet;
+  document.getElementById('ui-question').innerText = t.question;
+  document.getElementById('ui-search').innerText = t.search;
+
+  document.getElementById('lbl-proj').innerText = t.proj;
+  document.getElementById('dock-proj').innerText = t.proj;
+  document.getElementById('lbl-prod').innerText = t.prod;
+  document.getElementById('lbl-chat').innerText = t.chat;
+  document.getElementById('lbl-field').innerText = t.field;
+  document.getElementById('lbl-dream').innerText = t.dream;
+  document.getElementById('lbl-comp').innerText = t.comp;
+  document.getElementById('lbl-crit').innerText = t.crit;
+  document.getElementById('lbl-lib').innerText = t.lib;
+  document.getElementById('dock-lib').innerText = t.lib;
+  document.getElementById('lbl-media').innerText = t.media;
+  document.getElementById('lbl-sett').innerText = t.sett;
+  document.getElementById('dock-sett').innerText = t.sett;
+
+  document.getElementById('subText').innerText = t.subDefault;
+}
+
+// TÜRKÇE AHMET / ERKEK SES FİLTRESİ
 function bindAhmetVoice() {
   const voices = synth.getVoices();
   const trVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('tr') || v.lang.toLowerCase().includes('tur')));
@@ -348,104 +462,109 @@ function bindAhmetVoice() {
     return n.includes('ahmet') || n.includes('male') || n.includes('erkek') || n.includes('tolga') || n.includes('cem') || n.includes('tr-tr-x-dfz#male');
   }) || nonFemale[0] || trVoices[0] || null;
 }
-
 if (speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = bindAhmetVoice;
 }
 
-// Altyazıyı Konuşma Boyunca Sözcük Sözcük Akıtma (Subtitle Flow)
-function startSubtitleAnimation(fullText, durationMs) {
-  clearInterval(subtitleTimer);
-  const words = fullText.split(' ');
-  const subBox = document.getElementById('subBox');
+// KELİME KELİME PARLAMA SENKRONİZASYONU
+function highlightWords(text, durationSec) {
+  clearInterval(wordTimer);
+  const words = text.split(' ');
   const subText = document.getElementById('subText');
-  subBox.classList.add('talking');
+  subText.innerHTML = words.map((w, i) => `<span id="w-${i}">${w}</span>`).join(' ');
 
-  // Her sözcüğü span içine al
-  subText.innerHTML = words.map((w, i) => `<span id="word-${i}">${w}</span>`).join(' ');
+  const intervalMs = (durationSec * 1000) / words.length;
+  let idx = 0;
 
-  const interval = durationMs / words.length;
-  let curIndex = 0;
-
-  subtitleTimer = setInterval(() => {
-    if (curIndex < words.length) {
+  wordTimer = setInterval(() => {
+    if (idx < words.length) {
       document.querySelectorAll('.subtitle-text span').forEach(s => s.classList.remove('sub-word-active'));
-      const activeEl = document.getElementById(`word-${curIndex}`);
-      if (activeEl) {
-        activeEl.classList.add('sub-word-active');
-      }
-      curIndex++;
+      const el = document.getElementById(`w-${idx}`);
+      if (el) el.classList.add('sub-word-active');
+      idx++;
     } else {
-      clearInterval(subtitleTimer);
+      clearInterval(wordTimer);
     }
-  }, interval);
+  }, intervalMs);
 }
 
-function runNarrative(idx) {
-  if (idx >= narrative.length) {
-    isPlaying = false;
-    clearInterval(subtitleTimer);
+// SUNUMU ADIM ADIM ÇAL
+function playStep(idx) {
+  const list = SPEECH_DATA[currentLang];
+  if (idx >= list.length) {
+    isRunning = false;
+    clearInterval(wordTimer);
     document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
     document.getElementById('subBox').classList.remove('talking');
-    document.getElementById('subText').innerHTML = "Sunum başarıyla tamamlandı.";
+    document.getElementById('subText').innerHTML = UI_TEXTS[currentLang].subDone;
     return;
   }
 
-  const s = narrative[idx];
+  const step = list[idx];
   document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-  const el = document.getElementById(s.target);
+  const el = document.getElementById(step.target);
   if (el) el.classList.add('active-glow');
 
-  synth.cancel();
-  const ut = new SpeechSynthesisUtterance(s.text);
-  
-  if (!ahmetVoice) bindAhmetVoice();
-  if (ahmetVoice) ut.voice = ahmetVoice;
+  const subBox = document.getElementById('subBox');
+  subBox.classList.add('talking');
 
-  ut.lang = 'tr-TR';
-  ut.rate = 1.0;
-  ut.pitch = 0.70; // Tok bas ton
+  // --- KÜRTÇE MODU (BADÎNÎ MP3) ---
+  if (currentLang === 'KU') {
+    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+    currentAudio = new Audio(step.audio);
+    
+    currentAudio.onloadedmetadata = () => {
+      highlightWords(step.text, currentAudio.duration || 5);
+    };
 
-  // Yaklaşık okuma süresini hesaplayıp altyazı akışını başlat (kelime başına ~360ms)
-  const estimatedDuration = s.text.split(' ').length * 360;
-  startSubtitleAnimation(s.text, estimatedDuration);
+    currentAudio.play().catch(() => {
+      highlightWords(step.text, 5);
+      setTimeout(() => { if (isRunning) playStep(idx + 1); }, 5200);
+    });
 
-  // Destekleyen tarayıcılarda anlık kelime eşleşmesi
-  ut.onboundary = function(e) {
-    if (e.name === 'word') {
-      const charIndex = e.charIndex;
-      const textUntilNow = s.text.substring(0, charIndex);
-      const wordIndex = textUntilNow.trim().split(/\s+/).length - 1;
-      document.querySelectorAll('.subtitle-text span').forEach(s => s.classList.remove('sub-word-active'));
-      const wEl = document.getElementById(`word-${wordIndex}`);
-      if (wEl) wEl.classList.add('sub-word-active');
-    }
-  };
+    currentAudio.onended = () => {
+      clearInterval(wordTimer);
+      if (isRunning) setTimeout(() => playStep(idx + 1), 600);
+    };
+  } 
+  // --- TÜRKÇE MODU (AHMET / ERKEK TTS) ---
+  else {
+    synth.cancel();
+    const ut = new SpeechSynthesisUtterance(step.text);
+    if (!ahmetVoice) bindAhmetVoice();
+    if (ahmetVoice) ut.voice = ahmetVoice;
+    ut.lang = 'tr-TR';
+    ut.rate = 1.0;
+    ut.pitch = 0.70; // Tok bas rezonans
 
-  ut.onend = () => {
-    clearInterval(subtitleTimer);
-    if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600);
-  };
-  ut.onerror = () => {
-    clearInterval(subtitleTimer);
-    if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600);
-  };
+    const estDuration = (step.text.split(' ').length * 360) / 1000;
+    highlightWords(step.text, estDuration);
 
-  synth.speak(ut);
+    ut.onend = () => {
+      clearInterval(wordTimer);
+      if (isRunning) setTimeout(() => playStep(idx + 1), 600);
+    };
+    ut.onerror = () => {
+      clearInterval(wordTimer);
+      if (isRunning) setTimeout(() => playStep(idx + 1), 600);
+    };
+    synth.speak(ut);
+  }
 }
 
-function toggleSpeech() {
-  if (isPlaying) {
-    isPlaying = false;
+function togglePresentation() {
+  if (isRunning) {
+    isRunning = false;
+    clearInterval(wordTimer);
+    if (currentAudio) currentAudio.pause();
     synth.cancel();
-    clearInterval(subtitleTimer);
     document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
     document.getElementById('subBox').classList.remove('talking');
-    document.getElementById('subText').innerHTML = "Durduruldu.";
+    document.getElementById('subText').innerHTML = UI_TEXTS[currentLang].subStop;
     return;
   }
-  isPlaying = true;
-  runNarrative(0);
+  isRunning = true;
+  playStep(0);
 }
 </script>
 
