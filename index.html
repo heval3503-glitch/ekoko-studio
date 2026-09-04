@@ -2,594 +2,369 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>EKOKŌ MEDIA AI STUDIO</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-dark: #07090e;
-    --card-bg: rgba(18, 24, 38, 0.72);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --red-brand: #e63946;
-    --red-hover: #ff4d5e;
+    --glass-bg: rgba(22, 30, 48, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --red: #e63946;
     --gold: #d4af37;
-    --cyan: #00d2ff;
-    --purple: #9d4edd;
-    --text-white: #ffffff;
-    --text-dim: #94a3b8;
+    --neon-pink: #f72585;
+    --neon-purple: #7209b7;
+    --neon-blue: #3a86ff;
+    --neon-cyan: #4cc9f0;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg-dark); color: var(--text-white); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-
-  /* TOP GLOBAL SWITCHER BAR */
-  .global-nav {
-    height: 48px;
-    background: #0a0d14;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    z-index: 100;
-  }
-  .brand-mini { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; letter-spacing: 0.5px; }
-  .view-tabs { display: flex; gap: 6px; }
-  .v-tab {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-dim);
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .v-tab.active { background: rgba(230,57,70,0.2); border-color: var(--red-brand); color: #fff; }
-  .btn-sim {
-    background: linear-gradient(135deg, var(--red-brand), #b91c1c);
-    color: #fff;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 0 14px rgba(230,57,70,0.4);
-  }
-
-  /* MAIN VIEW CONTAINER */
-  .view-viewport { flex: 1; position: relative; overflow: hidden; }
-  .view-page { position: absolute; inset: 0; display: none; opacity: 0; transition: opacity 0.3s ease; }
-  .view-page.active-page { display: flex; opacity: 1; }
-
-  /* ================================================= */
-  /* VIEW 1: GİRİŞ EKRANI (LANDING SCREEN)             */
-  /* ================================================= */
-  #view-landing {
-    background: linear-gradient(rgba(7,9,14,0.4), rgba(7,9,14,0.75)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80') center/cover;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 30px 40px;
-  }
-  .land-top { display: flex; justify-content: space-between; font-size: 11.5px; color: #cbd5e1; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-  .land-center { align-self: center; text-align: center; max-width: 480px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
   
-  .logo-emblem {
-    width: 82px; height: 82px;
-    border-radius: 50%;
-    border: 2px solid var(--gold);
-    box-shadow: 0 0 25px rgba(212,175,55,0.4);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: radial-gradient(circle, #2a1b0a, #0b0d14);
-    position: relative;
-  }
-  .logo-emblem svg { width: 44px; height: 44px; fill: var(--gold); filter: drop-shadow(0 2px 6px #e63946); }
-  .land-title { font-size: 28px; font-weight: 900; letter-spacing: 2px; }
-  .land-tagline { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 1.5px; margin-top: -6px; }
-  .land-sub { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
-  
-  .land-actions { width: 100%; max-width: 280px; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-  .btn-land-red { background: var(--red-brand); border: none; padding: 11px; border-radius: 8px; color: #fff; font-weight: 800; font-size: 13px; cursor: pointer; }
-  .btn-land-ghost { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); padding: 10px; border-radius: 8px; color: #fff; font-weight: 700; font-size: 12px; cursor: pointer; }
-  
-  .land-quote { font-style: italic; font-size: 12px; color: #e2e8f0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-  .land-footer { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; }
-  .location-pin { display: flex; align-items: center; gap: 5px; color: #cbd5e1; }
-
-  /* ================================================= */
-  /* VIEW 2: ANA SAYFA / DASHBOARD                    */
-  /* ================================================= */
-  #view-dashboard {
-    background: radial-gradient(circle at 70% 30%, rgba(30,41,59,0.35), #07090e 80%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80') center/cover;
-  }
-  .dash-sidebar {
-    width: 200px;
-    background: rgba(10, 13, 20, 0.88);
-    backdrop-filter: blur(16px);
-    border-right: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    padding: 14px 10px;
-    gap: 3px;
-  }
-  .dash-menu-title { font-size: 13px; font-weight: 900; color: #fff; padding: 6px 10px 14px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
-  .dash-menu-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 8px 12px;
-    border-radius: 7px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-dim);
-    cursor: pointer;
-  }
-  .dash-menu-item.active { background: rgba(230,57,70,0.18); color: #fff; border-left: 3px solid var(--red-brand); }
-  .dash-content { flex: 1; display: flex; flex-direction: column; padding: 24px 32px; overflow-y: auto; }
-  
-  .dash-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .dash-search {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: 12px;
-    color: #fff;
-    width: 260px;
-    outline: none;
-  }
-  .dash-welcome h1 { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
-  .dash-welcome p { font-size: 13px; color: var(--text-dim); }
-
-  /* 4 BÜYÜK MODÜL KARTI */
-  .modules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 20px 0 30px; }
-  .module-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(14px);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-  }
-  .module-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.25); }
-  .mod-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .icon-red { background: rgba(230,57,70,0.15); border: 1px solid var(--red-brand); color: var(--red-brand); }
-  .icon-cyan { background: rgba(0,210,255,0.15); border: 1px solid var(--cyan); color: var(--cyan); }
-  .icon-blue { background: rgba(59,130,246,0.15); border: 1px solid #3b82f6; color: #3b82f6; }
-  .icon-purple { background: rgba(157,78,221,0.15); border: 1px solid var(--purple); color: var(--purple); }
-  .mod-title { font-size: 13px; font-weight: 800; color: #fff; }
-  .mod-desc { font-size: 10.5px; color: var(--text-dim); line-height: 1.3; }
-
-  /* SON PROJELER */
-  .projects-section { display: flex; flex-direction: column; gap: 12px; }
-  .proj-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; }
-  .proj-head span { color: var(--text-dim); font-size: 11px; cursor: pointer; }
-  .proj-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .proj-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
+  html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
     overflow: hidden;
-    cursor: pointer;
+    background: #000;
   }
-  .proj-thumb { width: 100%; height: 95px; object-fit: cover; display: block; }
-  .proj-meta { padding: 8px 10px; }
-  .proj-name { font-size: 11.5px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .proj-sub { font-size: 9.5px; color: var(--text-dim); margin-top: 2px; }
 
-  /* ================================================= */
-  /* VIEW 3: MASAÜSTÜ ÜRETİM ALANI (NLE KURGU EKRANI)  */
-  /* ================================================= */
-  #view-nle { background: #07090e; }
-  .nle-sidebar {
-    width: 170px;
-    background: #0a0d14;
-    border-right: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    padding: 10px 8px;
-    gap: 3px;
-  }
-  .nle-main { flex: 1; display: flex; flex-direction: column; }
-  .nle-viewport-area { flex: 1; display: flex; min-height: 0; }
-  
-  .nle-tools {
-    width: 110px;
-    background: #090c13;
-    border-right: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    padding: 8px 6px;
-    gap: 4px;
-    overflow-y: auto;
-  }
-  .tool-item {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 5px;
-    padding: 7px 8px;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-  }
-  .tool-item:hover { color: #fff; border-color: rgba(255,255,255,0.15); }
-
-  .nle-screen {
-    flex: 1;
-    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=80') center/cover;
-    position: relative;
+  /* TELEFON TAM EKRAN KATMANI */
+  .mobile-screen {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    background: linear-gradient(180deg, rgba(8, 12, 20, 0.35) 0%, rgba(8, 12, 20, 0.8) 100%), 
+                url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 14px;
-  }
-  .nle-screen::before { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 40%); }
-  .screen-header { position: relative; z-index: 2; display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #fff; }
-  .screen-footer { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
-  .tc-box { font-size: 12px; font-weight: 800; color: var(--text-dim); }
-  .controls-box { display: flex; gap: 12px; font-size: 14px; cursor: pointer; color: #fff; }
-
-  .nle-inspect {
-    width: 200px;
-    background: #0a0d14;
-    border-left: 1px solid var(--card-border);
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .inspect-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-dim); }
-  .param-row { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); }
-  .param-row strong { color: #fff; }
-
-  /* NLE TIMELINE */
-  .nle-timeline {
-    height: 150px;
-    background: #06080c;
-    border-top: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-  .time-tracks { flex: 1; padding: 4px; display: flex; flex-direction: column; gap: 3px; position: relative; }
-  .track-line { height: 26px; display: flex; align-items: center; }
-  .trk-name { width: 55px; font-size: 9px; font-weight: 800; color: var(--text-dim); text-align: right; padding-right: 8px; }
-  .trk-body { flex: 1; height: 100%; background: #0f1422; border-radius: 3px; position: relative; overflow: hidden; }
-  .trk-clip { position: absolute; top: 10%; height: 80%; border-radius: 3px; font-size: 8.5px; font-weight: 800; display: flex; align-items: center; padding: 0 8px; color: #fff; }
-  .c-v1 { background: #1e3a8a; border: 1px solid #3b82f6; width: 45%; left: 80px; }
-  .c-v2 { background: #065f46; border: 1px solid #10b981; width: 35%; left: 340px; }
-  .c-a1 { background: #581c87; border: 1px solid #a855f7; width: 65%; left: 80px; }
-  
-  .nle-cursor {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 2px;
-    background: var(--red-brand);
-    left: 80px;
-    pointer-events: none;
+    padding: env(safe-area-inset-top, 10px) 16px env(safe-area-inset-bottom, 8px);
   }
 
-  /* BOTTOM PROMPTER & SYSTEM BAR */
-  .system-prompter {
-    height: 38px;
-    background: #05070a;
-    border-top: 1px solid rgba(255,255,255,0.06);
+  /* ÜST PROFİL BAR */
+  .top-bar {
     display: flex;
     align-items: center;
-    padding: 0 16px;
-    gap: 10px;
-    font-size: 11.5px;
-    color: var(--gold);
+    justify-content: space-between;
+    padding-top: 10px;
   }
-  .status-pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--red-brand); animation: blink 1s infinite; }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .brand-left { display: flex; align-items: center; gap: 10px; }
+  .logo-circle {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffaa00, #7a1f00);
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    box-shadow: 0 0 12px rgba(212,175,55,0.4);
+  }
+  .page-name { font-size: 17px; font-weight: 800; color: #fff; }
+  
+  .btn-bell {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #fff;
+    cursor: pointer;
+  }
+
+  /* GİRİŞ METNİ */
+  .greeting-section { margin-top: 6px; }
+  .greeting-section h1 { font-size: 26px; font-weight: 900; color: #fff; line-height: 1.15; }
+  .greeting-section p { font-size: 13.5px; font-weight: 600; color: #e2e8f0; margin-top: 3px; }
+
+  /* ARAMA ÇUBUĞU */
+  .search-pill {
+    height: 46px;
+    background: rgba(20, 28, 45, 0.65);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+    margin: 8px 0;
+  }
+  .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
+  .mic-icon { font-size: 15px; }
+
+  /* 10'LU MODÜL IZGARASI */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    flex: 1;
+    align-content: center;
+  }
+  .m-card {
+    height: 70px;
+    background: rgba(18, 26, 44, 0.65);
+    backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .m-card:active, .m-card.active-glow {
+    transform: scale(0.96);
+    border-color: #fff !important;
+    box-shadow: 0 0 16px rgba(255,255,255,0.4) !important;
+  }
+
+  /* ÇERÇEVE RENKLERİ */
+  .neon-pink { border-color: rgba(247, 37, 133, 0.65); box-shadow: inset 0 0 8px rgba(247, 37, 133, 0.15); }
+  .neon-purple { border-color: rgba(114, 9, 183, 0.75); box-shadow: inset 0 0 8px rgba(114, 9, 183, 0.2); }
+  .neon-cyan { border-color: rgba(76, 201, 240, 0.65); box-shadow: inset 0 0 8px rgba(76, 201, 240, 0.18); }
+  .neon-blue { border-color: rgba(58, 134, 255, 0.65); box-shadow: inset 0 0 8px rgba(58, 134, 255, 0.18); }
+
+  .m-icon { font-size: 19px; line-height: 1; }
+  .m-label { font-size: 10.5px; font-weight: 700; color: #fff; text-align: center; }
+
+  .card-center-bot { grid-column: 2; }
+
+  /* BİLDİRİM ŞERİDİ */
+  .hud-banner {
+    background: rgba(7, 10, 16, 0.85);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  /* ALT DOCK BAR */
+  .bottom-dock {
+    height: 64px;
+    background: rgba(10, 14, 24, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 10px;
+    position: relative;
+  }
+  .dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 54px;
+  }
+  .dock-item.active { color: var(--red); }
+  .dock-icon { font-size: 17px; }
+
+  /* ORTADAKİ KIRMIZI DÜĞME */
+  .dock-plus {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff2a4b, #bd0827);
+    border: 3px solid rgba(10, 14, 24, 0.95);
+    box-shadow: 0 4px 16px rgba(230, 57, 70, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: #fff;
+    cursor: pointer;
+    margin-top: -20px;
+  }
+  .dock-plus:active { transform: scale(0.92); }
 </style>
 </head>
 <body>
 
-<!-- GLOBAL BAR & VIEW SWITCHER -->
-<div class="global-nav">
-  <div class="brand-mini">
-    <span style="color:var(--gold);">𓄂𓆃</span>
-    EKOKŌ MEDIA AI STUDIO
-  </div>
-  <div class="view-tabs">
-    <button class="v-tab active" onclick="switchView('landing')">Giriş Ekranı</button>
-    <button class="v-tab" onclick="switchView('dashboard')">Ana Sayfa</button>
-    <button class="v-tab" onclick="switchView('nle')">Üretim Alanı</button>
-  </div>
-  <button class="btn-sim" id="btnSimToggle" onclick="toggleFullSimulation()">🎬 REJİ SUNUMU BAŞLAT</button>
-</div>
-
-<div class="view-viewport">
-
-  <!-- ================= PAGE 1: GİRİŞ EKRANI ================= -->
-  <div class="view-page active-page" id="view-landing">
-    <div class="land-top">
-      <div>“Doğadan ilham, insandan hayal gücü, yapay zekayla sonsuz üretim.”</div>
-      <div>“Daha iyi bir yarın, daha güzel hikayeler…”</div>
+<div class="mobile-screen">
+  
+  <!-- ÜST KISIM -->
+  <div class="top-bar">
+    <div class="brand-left">
+      <div class="logo-circle">𓄂𓆃</div>
+      <div class="page-name">Ana Sayfa</div>
     </div>
-
-    <div class="land-center">
-      <div class="logo-emblem">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 2L9 9H15L12 2Z"/>
-          <path d="M5 11C3.5 11 2 12.5 2 14.5C2 16.5 3.5 18 5 18C7 18 9 16 10 14.5C11 16 13 18 15 18C16.5 18 18 16.5 18 14.5C18 12.5 16.5 11 15 11C13 11 11 13 10 14.5C9 13 7 11 5 11Z"/>
-        </svg>
-      </div>
-      <div class="land-title">EKOKO</div>
-      <div class="land-tagline">MEDIA AI STUDIO</div>
-      <div class="land-sub">Hayallerin gerçeğe dönüştüğü Yapay Zeka Stüdyosu</div>
-      
-      <div class="land-actions">
-        <button class="btn-land-red" onclick="switchView('dashboard')">Giriş Yap</button>
-        <button class="btn-land-ghost" onclick="switchView('nle')">Kayıt Ol</button>
-      </div>
-
-      <div class="land-quote">“Sınır yok, sadece yaratım var…”</div>
-    </div>
-
-    <div class="land-footer">
-      <div class="location-pin">📍 Cilo Dağları Hakkari / Türkiye</div>
-      <div>V8 Sovereign Pro</div>
-    </div>
+    <div class="btn-bell" onclick="toggleSpeech()">🔔</div>
   </div>
 
-  <!-- ================= PAGE 2: DASHBOARD ================= -->
-  <div class="view-page" id="view-dashboard">
-    <div class="dash-sidebar">
-      <div class="dash-menu-title"><span style="color:var(--gold);">𓄂𓆃</span> EKOKO</div>
-      <div class="dash-menu-item active">🏠 Ana Sayfa</div>
-      <div class="dash-menu-item">📁 Projeler</div>
-      <div class="dash-menu-item">✂️ Üretim Atölyesi</div>
-      <div class="dash-menu-item">💬 AI Sohbet</div>
-      <div class="dash-menu-item" onclick="switchView('nle')">🎛️ Üretim Alanı</div>
-      <div class="dash-menu-item">🌌 Hayal Dünyası</div>
-      <div class="dash-menu-item">🏆 Yarışmalar</div>
-      <div class="dash-menu-item">⚖️ Eleştiri Masası</div>
-      <div class="dash-menu-item">📚 Kütüphane</div>
-      <div class="dash-menu-item">📁 Medya / Dosyalar</div>
-      <div class="dash-menu-item">⚙️ Ayarlar</div>
+  <!-- BAŞLIK -->
+  <div class="greeting-section">
+    <h1>Merhaba!</h1>
+    <p id="dynText">Bugün ne üretmek istersin?</p>
+  </div>
+
+  <!-- ARAMA ALANI -->
+  <div class="search-pill" onclick="toggleSpeech()">
+    <div class="search-left">
+      <span>🔍</span>
+      <span>Aklındaki fikri anlat...</span>
+    </div>
+    <div class="mic-icon">🎙️</div>
+  </div>
+
+  <!-- 10'LU BUTON GRUBU -->
+  <div class="modules-grid">
+    <div class="m-card neon-pink" id="c-proj">
+      <div class="m-icon">📁</div>
+      <div class="m-label">Projeler</div>
+    </div>
+    <div class="m-card neon-purple" id="c-prod">
+      <div class="m-icon">✂️</div>
+      <div class="m-label">Üretim Atölyesi</div>
+    </div>
+    <div class="m-card neon-cyan" id="c-chat">
+      <div class="m-icon">💬</div>
+      <div class="m-label">AI Sohbet</div>
     </div>
 
-    <div class="dash-content">
-      <div class="dash-header-bar">
-        <input class="dash-search" type="text" placeholder="🔍 Projelerde ara..." readonly>
-        <div style="font-size:11px;color:var(--text-dim);">“Her kare, yeni bir hikayenin başlangıcıdır.”</div>
-      </div>
+    <div class="m-card neon-blue" id="c-field">
+      <div class="m-icon">🎛️</div>
+      <div class="m-label">Üretim Alanı</div>
+    </div>
+    <div class="m-card neon-purple" id="c-dream">
+      <div class="m-icon">🌌</div>
+      <div class="m-label">Hayal Dünyası</div>
+    </div>
+    <div class="m-card neon-purple" id="c-comp">
+      <div class="m-icon">🏆</div>
+      <div class="m-label">Yarışmalar</div>
+    </div>
 
-      <div class="dash-welcome">
-        <h1>Tekrar hoş geldin!</h1>
-        <p>Bugün ne üretmek istersin?</p>
-      </div>
+    <div class="m-card neon-blue" id="c-crit">
+      <div class="m-icon">⚖️</div>
+      <div class="m-label">Eleştiri Masası</div>
+    </div>
+    <div class="m-card neon-cyan" id="c-lib">
+      <div class="m-icon">📚</div>
+      <div class="m-label">Kütüphane</div>
+    </div>
+    <div class="m-card neon-blue" id="c-media">
+      <div class="m-icon">🗂️</div>
+      <div class="m-label">Medya</div>
+    </div>
 
-      <!-- 4 BÜYÜK MODÜL -->
-      <div class="modules-grid">
-        <div class="module-card">
-          <div class="mod-icon icon-red">✂️</div>
-          <div class="mod-title">Üretim Atölyesi</div>
-          <div class="mod-desc">Yapay zeka ile sıfırdan üret</div>
-        </div>
-        <div class="module-card">
-          <div class="mod-icon icon-cyan">💬</div>
-          <div class="mod-title">AI Sohbet</div>
-          <div class="mod-desc">Fikrini anlat, sesle üretelim</div>
-        </div>
-        <div class="module-card" onclick="switchView('nle')">
-          <div class="mod-icon icon-blue">🎛️</div>
-          <div class="mod-title">Üretim Alanı</div>
-          <div class="mod-desc">Profesyonel düzenleme araçları</div>
-        </div>
-        <div class="module-card">
-          <div class="mod-icon icon-purple">🌌</div>
-          <div class="mod-title">Hayal Dünyası</div>
-          <div class="mod-desc">Sonsuz fikir, sınırsız olasılık</div>
-        </div>
-      </div>
-
-      <!-- SON PROJELER -->
-      <div class="projects-section">
-        <div class="proj-head">Son Projeler <span>Tümünü Gör →</span></div>
-        <div class="proj-grid">
-          <div class="proj-card" onclick="switchView('nle')">
-            <img class="proj-thumb" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300">
-            <div class="proj-meta">
-              <div class="proj-name">Cilo'nun İzinde</div>
-              <div class="proj-sub">Video • 02:54</div>
-            </div>
-          </div>
-          <div class="proj-card">
-            <img class="proj-thumb" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300">
-            <div class="proj-meta">
-              <div class="proj-name">Yüksekova'da Yaşam</div>
-              <div class="proj-sub">Belgesel • 01:12</div>
-            </div>
-          </div>
-          <div class="proj-card">
-            <img class="proj-thumb" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300">
-            <div class="proj-meta">
-              <div class="proj-name">Kışın Sesi</div>
-              <div class="proj-sub">Reklam • 00:45</div>
-            </div>
-          </div>
-          <div class="proj-card">
-            <img class="proj-thumb" src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=300">
-            <div class="proj-meta">
-              <div class="proj-name">Doğa ve İnsan</div>
-              <div class="proj-sub">Kısa Film • 00:28</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- MERKEZ AYARLAR -->
+    <div class="m-card neon-blue card-center-bot" id="c-sett">
+      <div class="m-icon">⚙️</div>
+      <div class="m-label">Ayarlar</div>
     </div>
   </div>
 
-  <!-- ================= PAGE 3: ÜRETİM ALANI (NLE) ================= -->
-  <div class="view-page" id="view-nle">
-    <div class="nle-sidebar">
-      <div class="dash-menu-title"><span style="color:var(--gold);">𓄂𓆃</span> EKOKO</div>
-      <div class="dash-menu-item" onclick="switchView('dashboard')">🏠 Ana Sayfa</div>
-      <div class="dash-menu-item">📁 Projeler</div>
-      <div class="dash-menu-item active">🎛️ Üretim Alanı</div>
-      <div class="dash-menu-item">💬 AI Sohbet</div>
-      <div class="dash-menu-item">🌌 Hayal Dünyası</div>
-      <div class="dash-menu-item">⚖️ Eleştiri Masası</div>
+  <!-- BİLGİ BARI -->
+  <div class="hud-banner" id="bannerMsg">
+    Sunumu başlatmak için mikrofon veya kırmızı '+' butonuna dokunun.
+  </div>
+
+  <!-- ALT MENÜ -->
+  <div class="bottom-dock">
+    <div class="dock-item active">
+      <div class="dock-icon">🏠</div>
+      <span>Ana Sayfa</span>
+    </div>
+    <div class="dock-item">
+      <div class="dock-icon">📁</div>
+      <span>Projeler</span>
     </div>
 
-    <div class="nle-main">
-      <div class="nle-viewport-area">
-        <div class="nle-tools">
-          <div class="tool-item">✂️ Kes</div>
-          <div class="tool-item">📐 Kırp</div>
-          <div class="tool-item">🎨 Renk</div>
-          <div class="tool-item">🔊 Ses</div>
-          <div class="tool-item">📝 Metin</div>
-          <div class="tool-item">✨ Efekt</div>
-          <div class="tool-item">🎞️ Geçiş</div>
-        </div>
+    <div class="dock-plus" onclick="toggleSpeech()">+</div>
 
-        <div class="nle-screen">
-          <div class="screen-header">
-            <div>Cilo'nun İzinde (Master 4K)</div>
-            <div style="color:var(--red-brand); font-size:10px;">● CANLI MONİTÖR</div>
-          </div>
-          <div class="screen-footer">
-            <div class="tc-box" id="nleTc">00:00:02:14</div>
-            <div class="controls-box">⏮ ◀ ⏸ ▶ ⏭</div>
-            <div style="font-size:10px; color:var(--gold);">“Aynı gökyüzü altında daha güzel hikayeler…”</div>
-          </div>
-        </div>
-
-        <div class="nle-inspect">
-          <div class="inspect-title">Görüntü Parametreleri</div>
-          <div class="param-row"><span>Parlaklık</span><strong>0</strong></div>
-          <div class="param-row"><span>Kontrast</span><strong>12</strong></div>
-          <div class="param-row"><span>Doygunluk</span><strong>8</strong></div>
-          <div class="param-row"><span>Sıcaklık</span><strong>6</strong></div>
-          <div class="param-row"><span>Keskinlik</span><strong>10</strong></div>
-        </div>
-      </div>
-
-      <div class="nle-timeline">
-        <div class="nle-cursor" id="nleCursor"></div>
-        <div class="time-tracks">
-          <div class="track-line"><span class="trk-name">Video 2</span><div class="trk-body"><div class="trk-clip c-v2">Doga_Detay.mp4</div></div></div>
-          <div class="track-line"><span class="trk-name">Video 1</span><div class="trk-body"><div class="trk-clip c-v1">Cilo_Buzul_Golu.mp4</div></div></div>
-          <div class="track-line"><span class="trk-name">Ses 1</span><div class="trk-body"><div class="trk-clip c-a1">Diyalog_Master.wav</div></div></div>
-        </div>
-      </div>
+    <div class="dock-item">
+      <div class="dock-icon">📚</div>
+      <span>Kütüphane</span>
+    </div>
+    <div class="dock-item">
+      <div class="dock-icon">⚙️</div>
+      <span>Ayarlar</span>
     </div>
   </div>
 
-</div>
-
-<!-- BOTTOM PROMPTER -->
-<div class="system-prompter">
-  <span class="status-pulse"></span>
-  <span id="promptText">Hazır: Sunumu başlatmak için sağ üstteki '🎬 REJİ SUNUMU BAŞLAT' butonuna dokunun.</span>
 </div>
 
 <script>
-let currentView = 'landing';
-let isSimActive = false;
+let isPlaying = false;
 let synth = window.speechSynthesis;
-let cursorInterval = null;
-let curX = 80;
 
-function switchView(viewName) {
-  currentView = viewName;
-  document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active-page'));
-  document.querySelectorAll('.v-tab').forEach(t => t.classList.remove('active'));
-
-  document.getElementById('view-' + viewName).classList.add('active-page');
-  const tabs = document.querySelectorAll('.v-tab');
-  if (viewName === 'landing') tabs[0].classList.add('active');
-  if (viewName === 'dashboard') tabs[1].classList.add('active');
-  if (viewName === 'nle') tabs[2].classList.add('active');
-}
-
-const simChapters = [
+const narrative = [
   {
-    view: 'landing',
-    prompt: "EKOKO MEDIA AI STUDIO: Giriş Ekranı ve Felsefe",
-    text: "Ekoko Medya Yapay Zeka Stüdyosu, Cilo Dağlarının kadim mirasından ilham alarak hayalleri sınırsız dijital eserlere dönüştürmek için doğdu. Sınır yok, sadece yaratan var."
+    target: 'c-prod',
+    text: "Ekoko Medya Yapay Zeka Stüdyosuna hoş geldiniz. Üretim Atölyesi, fikrin ilk anından montaj masasına kadar tüm süreci tek merkezde toplar."
   },
   {
-    view: 'dashboard',
-    prompt: "ANA SAYFA: Dört Temel Yaratım Atölyesi ve Canlı Hafıza",
-    text: "Ana Sayfa stüdyonun yaşayan merkezidir. Üretim Atölyesi, Yapay Zeka Sohbet, Üretim Alanı ve Hayal Dünyası tek çatı altında buluşur. Projeleriniz asla kaybolmayan estetik bir hafızayla korunur."
+    target: 'c-chat',
+    text: "Yapay Zeka Sohbet, sanatçının karşısında bilge bir reji ortağıdır. Siz fikrinizi anlatırsınız, o sahneleri kurar."
   },
   {
-    view: 'nle',
-    prompt: "ÜRETİM ALANI: Çok Kanallı 4K Kurgu ve Renk Masası",
-    text: "Üretim Alanı, zamanın akışına duygu dokunan profesyonel montaj tezgahıdır. Cilo'nun izinde her sahne, en yüksek sinematik standartta burada birleşir ve tek tıkla dışa aktarılır."
+    target: 'c-field',
+    text: "Üretim Alanı, zamanın akışına duygu dokunan profesyonel montaj tezgahıdır."
+  },
+  {
+    target: 'c-dream',
+    text: "Hayal Dünyası ve Gever Ay; kadim sözlü hafızamızı ve dengbejlik mirasını dijital çağa taşıma bilincidir."
   }
 ];
 
-function pickMaleVoice() {
-  const voices = synth.getVoices();
-  const tr = voices.filter(v => v.lang && (v.lang.includes('tr') || v.lang.includes('TR')));
-  return tr.find(v => {
+function getMaleVoice() {
+  const list = synth.getVoices().filter(v => v.lang && v.lang.includes('tr'));
+  return list.find(v => {
     const n = v.name.toLowerCase();
     return (n.includes('male') || n.includes('erkek') || n.includes('ahmet') || n.includes('tolga')) && !n.includes('female');
-  }) || tr[0] || null;
+  }) || list[0] || null;
 }
 
-function runSimChapter(idx) {
-  if (idx >= simChapters.length) {
-    isSimActive = false;
-    clearInterval(cursorInterval);
-    document.getElementById('btnSimToggle').innerText = "YENİDEN BAŞLAT";
-    document.getElementById('promptText').innerText = "Sunum başarıyla tamamlandı.";
+function runNarrative(idx) {
+  if (idx >= narrative.length) {
+    isPlaying = false;
+    document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
+    document.getElementById('bannerMsg').innerText = "Sunum tamamlandı.";
     return;
   }
 
-  const c = simChapters[idx];
-  switchView(c.view);
-  document.getElementById('promptText').innerText = c.prompt + " — " + c.text;
+  const s = narrative[idx];
+  document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
+  const el = document.getElementById(s.target);
+  if (el) el.classList.add('active-glow');
+
+  document.getElementById('bannerMsg').innerText = s.text;
 
   synth.cancel();
-  const ut = new SpeechSynthesisUtterance(c.text);
-  const v = pickMaleVoice();
+  const ut = new SpeechSynthesisUtterance(s.text);
+  const v = getMaleVoice();
   if (v) ut.voice = v;
   ut.lang = 'tr-TR';
   ut.rate = 1.0;
-  ut.pitch = 0.8;
+  ut.pitch = 0.82;
 
-  ut.onend = () => { if (isSimActive) setTimeout(() => runSimChapter(idx + 1), 700); };
-  ut.onerror = () => { if (isSimActive) setTimeout(() => runSimChapter(idx + 1), 700); };
+  ut.onend = () => { if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600); };
+  ut.onerror = () => { if (isPlaying) setTimeout(() => runNarrative(idx + 1), 600); };
   synth.speak(ut);
 }
 
-function toggleFullSimulation() {
-  if (isSimActive) {
-    isSimActive = false;
+function toggleSpeech() {
+  if (isPlaying) {
+    isPlaying = false;
     synth.cancel();
-    clearInterval(cursorInterval);
-    document.getElementById('btnSimToggle').innerText = "DEVAM ET";
+    document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
+    document.getElementById('bannerMsg').innerText = "Durduruldu.";
     return;
   }
-
-  isSimActive = true;
-  document.getElementById('btnSimToggle').innerText = "DURAKLAT";
-
-  cursorInterval = setInterval(() => {
-    curX += 2;
-    if (curX > 480) curX = 80;
-    const c = document.getElementById('nleCursor');
-    if (c) c.style.left = curX + 'px';
-  }, 100);
-
-  runSimChapter(0);
+  isPlaying = true;
+  runNarrative(0);
 }
 </script>
 
