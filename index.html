@@ -141,7 +141,6 @@
   .m-label { font-size: 9.5px; font-weight: 700; color: #fff; text-align: center; }
   .card-center-bot { grid-column: 2; }
 
-  /* OKUNAKLI NET ALTYAZI ÇUBUĞU */
   .subtitle-container {
     background: rgba(4, 6, 12, 0.96);
     backdrop-filter: blur(18px);
@@ -327,14 +326,18 @@
 <script>
 let currentLang = 'KU';
 let isRunning = false;
-let audio = null;
+let audio = new Audio();
 let activeTarget = null;
 
-// KU: 74 SANİYE TAM DAĞILIM | TR: 64 SANİYE TAM DAĞILIM
+// KU: 74 SANİYE | TR: 64 SANİYE TAM BÖLÜM VE VURGU ZAMANLARI
 const SYNC_DATA = {
   KU: {
-    file: 'kurdish%20(online-audio-converter.com).mp3',
-    fallback: 'kurdish (online-audio-converter.com).mp3',
+    sources: [
+      'kurdish%20(online-audio-converter.com).mp3',
+      'kurdish (online-audio-converter.com).mp3',
+      'ses-ku.mp3',
+      'ses-ku.wav'
+    ],
     greet: "Silav!",
     slogan: "«Ji xwezayê îlham, bi aqilê çêkirî hilberîna bêsînor.»",
     search: "Xeyala dilê xwe bêje...",
@@ -361,8 +364,12 @@ const SYNC_DATA = {
     ]
   },
   TR: {
-    file: 'Audio%20Export.mp3',
-    fallback: 'Audio Export.mp3',
+    sources: [
+      'Audio%20Export.mp3',
+      'Audio Export.mp3',
+      'ses-tr.mp3',
+      'ses-tr.wav'
+    ],
     greet: "Merhaba!",
     slogan: "«Doğadan ilham, yapay zekayla sınırsız üretim.»",
     search: "Aklındaki fikri anlat...",
@@ -411,65 +418,64 @@ function toggleLang() {
   }
 }
 
-function setupAudioEvents() {
-  audio.ontimeupdate = () => {
-    if (!isRunning) return;
-    const t = audio.currentTime;
-    const cues = SYNC_DATA[currentLang].cues;
-    const activeCue = cues.find(c => t >= c.start && t < c.end);
-
-    if (activeCue) {
-      document.getElementById('subTitle').innerText = activeCue.title;
-      document.getElementById('subText').innerText = activeCue.text;
-      document.getElementById('subBox').classList.add('talking');
-
-      if (activeTarget !== activeCue.target) {
-        document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-        const el = document.getElementById(activeCue.target);
-        if (el) el.classList.add('active-glow');
-        activeTarget = activeCue.target;
-      }
-    }
-  };
-
-  audio.onended = () => {
+// Ses dosyasını sırayla kaynak listesinden bulup çalan akıllı fonksiyon
+function tryPlayAudio(sourceList, index = 0) {
+  if (index >= sourceList.length) {
+    document.getElementById('subText').innerText = "Ses dosyası bulunamadı. Lütfen GitHub'a yüklendiğinden emin olun.";
     isRunning = false;
-    document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-    document.getElementById('subBox').classList.remove('talking');
-    document.getElementById('subTitle').innerText = `DAWÎ / SON`;
-    document.getElementById('subText').innerText = SYNC_DATA[currentLang].doneText;
-  };
+    return;
+  }
+
+  audio.src = sourceList[index];
+  audio.currentTime = 0;
+  
+  audio.play().then(() => {
+    isRunning = true;
+    document.getElementById('subBox').classList.add('talking');
+  }).catch(() => {
+    tryPlayAudio(sourceList, index + 1);
+  });
 }
+
+audio.ontimeupdate = () => {
+  if (!isRunning) return;
+  const t = audio.currentTime;
+  const cues = SYNC_DATA[currentLang].cues;
+  const activeCue = cues.find(c => t >= c.start && t < c.end);
+
+  if (activeCue) {
+    document.getElementById('subTitle').innerText = activeCue.title;
+    document.getElementById('subText').innerText = activeCue.text;
+    document.getElementById('subBox').classList.add('talking');
+
+    if (activeTarget !== activeCue.target) {
+      document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
+      const el = document.getElementById(activeCue.target);
+      if (el) el.classList.add('active-glow');
+      activeTarget = activeCue.target;
+    }
+  }
+};
+
+audio.onended = () => {
+  isRunning = false;
+  document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
+  document.getElementById('subBox').classList.remove('talking');
+  document.getElementById('subTitle').innerText = `DAWÎ / SON`;
+  document.getElementById('subText').innerText = SYNC_DATA[currentLang].doneText;
+};
 
 function togglePlayback() {
   if (isRunning) {
     isRunning = false;
-    if (audio) audio.pause();
+    audio.pause();
     document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
     document.getElementById('subBox').classList.remove('talking');
     document.getElementById('subText').innerText = "Pêşkêşî sekinî / Durduruldu.";
     return;
   }
 
-  isRunning = true;
-  const cfg = SYNC_DATA[currentLang];
-
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
-  }
-
-  audio = new Audio(cfg.file);
-  setupAudioEvents();
-
-  audio.play().catch(() => {
-    audio = new Audio(cfg.fallback);
-    setupAudioEvents();
-    audio.play().catch(e => {
-      console.log("Ses açılamadı:", e);
-      document.getElementById('subText').innerText = "Ses dosyası bulunamadı.";
-    });
-  });
+  tryPlayAudio(SYNC_DATA[currentLang].sources, 0);
 }
 </script>
 
