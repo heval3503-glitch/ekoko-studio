@@ -3,445 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EKOKO Media AI Studio - Canlı Simülasyon</title>
+<title>EKOKO Media AI Studio - Canlı İnteraktif Demo</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #070b14; color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  body { background: #060913; color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-  .app-container {
-    position: relative; flex: 1; display: flex; flex-direction: column;
-    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1080&q=80') center top / cover no-repeat;
-    overflow: hidden;
+  /* Arka Plan */
+  .bg-canvas {
+    position: fixed; inset: 0;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    filter: brightness(0.4) saturate(1.2); z-index: 0; transition: all 0.8s ease;
   }
-  .bg-dimmer {
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(7, 11, 20, 0.45) 0%, rgba(7, 11, 20, 0.88) 60%, #070b14 100%);
+  .bg-overlay {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at center, rgba(15,23,42,0.4) 0%, rgba(6,9,19,0.92) 80%);
     z-index: 1;
   }
 
-  /* Sanal Parmak / Tıklama İmleci */
-  #virtualCursor {
-    position: absolute; width: 38px; height: 38px; border-radius: 50%;
-    background: rgba(250, 204, 21, 0.45); border: 2px solid #facc15;
-    pointer-events: none; z-index: 9999; display: none; transform: translate(-50%, -50%);
-    box-shadow: 0 0 25px #facc15; transition: all 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Sanal Dokunmatik Parmak */
+  #cursor {
+    position: fixed; width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(250, 204, 21, 0.4); border: 2px solid #facc15;
+    box-shadow: 0 0 25px #facc15; pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%); display: none; transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  #virtualCursor.click { transform: translate(-50%, -50%) scale(0.7); background: rgba(239, 68, 68, 0.85); border-color: #fff; }
+  #cursor.tap { transform: translate(-50%, -50%) scale(0.65); background: rgba(239, 68, 68, 0.9); border-color: #fff; }
 
-  /* Üst Header */
-  .top-header {
+  /* Üst Durum Çubuğu */
+  .top-bar {
     position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 18px;
+    padding: 14px 18px; background: rgba(10, 15, 29, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-  .brand-box { display: flex; align-items: center; gap: 10px; }
-  .logo-badge { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
-  .brand-title { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
-  .lang-tag { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(250, 204, 21, 0.6); color: #facc15; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; color: #fff; }
+  .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #ef4444, #f59e0b); display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 12px rgba(239,68,68,0.5); }
+  .status-badge { font-size: 10px; font-weight: 700; color: #22c55e; background: rgba(34,197,94,0.15); border: 1px solid #22c55e; padding: 3px 8px; border-radius: 12px; }
 
-  /* Canlı Ekran */
-  .main-content {
-    position: relative; z-index: 10; flex: 1; overflow-y: auto; padding: 0 16px 80px;
-    display: flex; flex-direction: column; gap: 12px;
+  /* Sayfa Geçiş Sahnesi */
+  .viewport { position: relative; z-index: 5; flex: 1; overflow: hidden; }
+  .page {
+    position: absolute; inset: 0; padding: 16px; display: flex; flex-direction: column; gap: 14px;
+    opacity: 0; pointer-events: none; transform: scale(0.96) translateY(20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  .page.active { opacity: 1; pointer-events: auto; transform: scale(1) translateY(0); }
 
-  .welcome-title { font-size: 24px; font-weight: 800; color: #f8fafc; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-  .welcome-sub { font-size: 13px; color: #cbd5e1; margin-top: -2px; }
-  
-  .search-bar {
-    background: rgba(20, 29, 48, 0.75); border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 22px; padding: 10px 16px; font-size: 13px; color: #94a3b8;
-    display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(8px);
-    transition: all 0.3s ease;
+  /* 1. SAYFA: ANA SAYFA & MODÜL IZGARASI */
+  .welcome-h { font-size: 24px; font-weight: 800; }
+  .search-box { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 18px; padding: 10px 14px; font-size: 12px; color: #94a3b8; display: flex; justify-content: space-between; }
+  .grid-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .g-card {
+    background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+    padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+    backdrop-filter: blur(8px); transition: all 0.3s;
   }
-  .search-bar.active-search { border-color: #facc15; color: #fff; background: rgba(30, 41, 69, 0.95); box-shadow: 0 0 15px rgba(250,204,21,0.4); }
+  .g-card .icon { font-size: 20px; }
+  .g-card .title { font-size: 10px; font-weight: 700; color: #f1f5f9; }
+  .g-card.highlight { border-color: #facc15 !important; background: rgba(30,41,69,0.95); transform: scale(1.06); box-shadow: 0 0 20px rgba(250,204,21,0.4); }
 
-  /* 9'lu Modül Izgarası */
-  .grid-container {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  /* 2. SAYFA: 4K KURGU & MULTITRACK TIMELINE */
+  .video-preview {
+    height: 180px; border-radius: 12px; overflow: hidden; position: relative;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80') center/cover;
+    border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.6);
   }
-  .grid-card {
-    background: rgba(18, 26, 44, 0.78); border-radius: 14px; padding: 12px 6px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 2px solid transparent; backdrop-filter: blur(10px); transition: all 0.3s ease;
-    text-align: center; gap: 5px;
-  }
-  .grid-card .icon { font-size: 22px; }
-  .grid-card .name { font-size: 11px; font-weight: 700; color: #f1f5f9; }
-  
-  .c-red { border-color: rgba(239, 68, 68, 0.5); }
-  .c-purple { border-color: rgba(168, 85, 247, 0.5); }
-  .c-cyan { border-color: rgba(56, 189, 248, 0.5); }
-  .c-blue { border-color: rgba(59, 130, 246, 0.5); }
-  .c-yellow { border-color: rgba(250, 204, 21, 0.6); }
+  .preview-hud { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); font-size: 9px; padding: 3px 6px; border-radius: 4px; color: #38bdf8; font-weight: 700; }
+  .play-glow { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 36px; color: #facc15; text-shadow: 0 0 15px rgba(0,0,0,0.8); }
 
-  .grid-card.active-card {
-    transform: scale(1.08); box-shadow: 0 0 25px currentColor; z-index: 50;
-    border-color: #fff !important; background: rgba(30, 41, 69, 0.95) !important;
+  .timeline-wrapper {
+    background: rgba(6, 9, 19, 0.9); border: 1px solid #1e293b; border-radius: 10px; padding: 8px;
+    display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden;
   }
+  .playhead-line { position: absolute; top:0; bottom:0; left: 10%; width: 2px; background: #ef4444; box-shadow: 0 0 8px #ef4444; z-index: 10; }
+  .track-item { height: 26px; background: #0f172a; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 9px; font-weight: 700; color: #64748b; }
+  .clip-bar { height: 18px; border-radius: 3px; margin-left: 8px; display: flex; align-items: center; padding: 0 6px; color: #fff; font-size: 9px; }
+  .bar-v { width: 75%; background: linear-gradient(90deg, #1d4ed8, #3b82f6); }
+  .bar-a { width: 85%; background: linear-gradient(90deg, #6d28d9, #8b5cf6); }
+  .bar-ai { width: 60%; background: linear-gradient(90deg, #be185d, #ec4899); }
 
-  /* Kurgu Timeline Paneli */
-  #studioWorkspace {
-    display: none; flex-direction: column; gap: 8px; background: rgba(10, 15, 28, 0.96);
-    border: 1px solid #38bdf8; border-radius: 14px; padding: 10px; backdrop-filter: blur(12px);
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.25); animation: popUp 0.4s ease forwards;
-  }
-  @keyframes popUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  /* 3. SAYFA: AI ASİSTAN KONSOLU */
+  .chat-box { flex: 1; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+  .chat-msg { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; font-size: 12px; line-height: 1.4; }
+  .chat-msg.bot { border-left: 3px solid #38bdf8; }
 
-  .monitor-box {
-    position: relative; height: 150px; border-radius: 10px; overflow: hidden;
-    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1080&q=80') center/cover no-repeat; border: 1px solid #1e293b;
-    display: flex; flex-direction: column; justify-content: space-between; padding: 8px;
+  /* 4. SAYFA: GEWER AI YAKINDA */
+  .gewer-hero {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 12px; padding: 20px;
   }
-  .monitor-tag { background: rgba(0,0,0,0.7); color: #facc15; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 4px; width: fit-content; }
-  .monitor-playhead { align-self: center; font-size: 30px; color: #facc15; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
+  .gewer-portal {
+    width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle, #facc15 0%, #7c3aed 70%);
+    display: flex; align-items: center; justify-content: center; font-size: 40px; box-shadow: 0 0 35px rgba(250,204,21,0.6);
+    animation: portalPulse 2s infinite alternate;
+  }
+  @keyframes portalPulse { 0% { transform: scale(0.95); filter: hue-rotate(0deg); } 100% { transform: scale(1.05); filter: hue-rotate(60deg); } }
+  .gewer-tag { background: rgba(250,204,21,0.15); border: 1px solid #facc15; color: #facc15; font-size: 12px; font-weight: 800; padding: 6px 16px; border-radius: 20px; }
 
-  .timeline-box {
-    background: #060913; border-radius: 8px; padding: 6px; border: 1px solid #1e293b;
-    display: flex; flex-direction: column; gap: 5px; position: relative; overflow: hidden;
+  /* Alt Kontrol & Altyazı Konsolu */
+  .dock-footer {
+    position: relative; z-index: 10; background: rgba(10,15,26,0.95); border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 16px; display: flex; flex-direction: column; gap: 8px;
   }
-  .red-playhead { position: absolute; top:0; bottom:0; left:0; width: 2px; background: #ef4444; z-index: 10; box-shadow: 0 0 8px #ef4444; }
-  .track-row { height: 22px; background: #0f172a; border-radius: 4px; display: flex; align-items: center; padding: 0 6px; font-size: 9px; font-weight: 700; color: #64748b; }
-  .track-clip { height: 16px; border-radius: 3px; margin-left: 8px; display: flex; align-items: center; padding: 0 6px; color: #fff; font-size: 9px; }
-  .tc-video { background: linear-gradient(90deg, #1d4ed8, #3b82f6); width: 75%; border-left: 3px solid #93c5fd; }
-  .tc-audio { background: linear-gradient(90deg, #6d28d9, #8b5cf6); width: 85%; border-left: 3px solid #c4b5fd; }
-  .tc-ai { background: linear-gradient(90deg, #be185d, #ec4899); width: 60%; border-left: 3px solid #fbcfe8; }
+  .voice-wave { display: flex; align-items: center; justify-content: center; gap: 3px; height: 18px; }
+  .bar { width: 3px; height: 4px; background: #22c55e; border-radius: 2px; transition: height 0.08s; }
+  .subtitle-text { font-size: 13px; font-weight: 600; color: #facc15; text-align: center; min-height: 38px; display: flex; align-items: center; justify-content: center; }
 
-  /* Özel Gewer AI Modülü Paneli */
-  #gewerCardModal {
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    background: radial-gradient(circle, rgba(30,27,75,0.95) 0%, rgba(10,15,28,0.98) 100%);
-    border: 2px solid #facc15; border-radius: 16px; padding: 22px 14px; text-align: center; gap: 10px;
-    box-shadow: 0 0 40px rgba(250, 204, 21, 0.4); animation: popUp 0.5s ease forwards;
-  }
-
-  /* Ses Spektrumu */
-  .wave-bar-box {
-    height: 36px; background: #090e1a; border-radius: 8px; display: flex;
-    align-items: center; justify-content: center; gap: 3px; padding: 0 8px;
-    border: 1px solid rgba(250, 204, 21, 0.4);
-  }
-  .w-bar { width: 3px; background: #22c55e; border-radius: 2px; height: 6px; transition: height 0.08s ease; }
-
-  /* Altyazı Konsolu */
-  .sub-console {
-    background: rgba(6, 9, 17, 0.95); border: 2px solid #facc15; border-radius: 12px;
-    padding: 10px 14px; min-height: 54px; display: flex; align-items: center;
-    box-shadow: 0 0 15px rgba(250, 204, 21, 0.25);
-  }
-  .sub-text { font-size: 13px; font-weight: 600; color: #facc15; line-height: 1.4; }
-
-  /* Alt Dock */
-  .bottom-dock {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 68px;
-    background: rgba(10, 15, 26, 0.96); border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex; justify-content: space-around; align-items: center; z-index: 100;
-  }
-  .dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #94a3b8; font-weight: 600; }
-  .dock-item.active { color: #ef4444; }
-  .dock-plus {
-    width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626);
-    display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff;
-    margin-top: -24px; box-shadow: 0 0 18px rgba(239, 68, 68, 0.7); cursor: pointer;
-  }
-
-  /* Başlangıç Ekranı */
-  .demo-overlay-btn {
-    position: fixed; inset: 0; background: rgba(7, 11, 20, 0.92); z-index: 10000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;
+  /* Başlat Ekranı */
+  .splash {
+    position: fixed; inset: 0; background: rgba(6,9,19,0.95); z-index: 10000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 20px; text-align: center;
   }
   .start-btn {
-    background: linear-gradient(135deg, #facc15, #f59e0b); color: #000; font-size: 18px; font-weight: 800;
-    padding: 16px 36px; border-radius: 30px; border: none; box-shadow: 0 0 30px rgba(250, 204, 21, 0.7);
-    cursor: pointer;
+    background: linear-gradient(135deg, #facc15, #f59e0b); color: #000; font-size: 16px; font-weight: 800;
+    padding: 14px 32px; border-radius: 30px; border: none; box-shadow: 0 0 25px rgba(250,204,21,0.6); cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<div id="virtualCursor"></div>
+<div id="cursor"></div>
 
-<div class="demo-overlay-btn" id="overlayScreen">
-  <div style="font-size: 22px; font-weight: 800; color:#facc15; text-align:center;">EKOKO MEDIA AI STUDIO</div>
-  <div style="font-size: 13px; color:#cbd5e1; text-align:center; padding: 0 25px; line-height: 1.5;">
-    Canlı interaktif stüdyo demosu.<br>
-    <strong>Seslendirme otomatik başlayacak ve tüm modüller tanıtılacaktır.</strong>
+<div class="splash" id="splash">
+  <div style="font-size: 24px; font-weight: 900; color: #facc15;">EKOKO AI STUDIO</div>
+  <div style="font-size: 12px; color: #94a3b8; max-width: 280px; line-height: 1.5;">
+    Gelişmiş Çok Sayfalı İnteraktif Tur.<br>
+    Seslendirme otomatik başlayacak ve kurgu stüdyosuna geçilecektir.
   </div>
-  <button class="start-btn" onclick="startFullDemo()">▶ CANLI SUNUMU BAŞLAT</button>
+  <button class="start-btn" onclick="startShow()">▶ CANLI DEMOYU BAŞLAT</button>
 </div>
 
-<div class="app-container">
-  <div class="bg-dimmer"></div>
+<div class="bg-canvas" id="bgCanvas"></div>
+<div class="bg-overlay"></div>
 
-  <div class="top-header">
-    <div class="brand-box">
-      <div class="logo-badge">E</div>
-      <div>
-        <div class="brand-title">EKOKO AI STUDIO</div>
-        <div style="font-size: 10px; color:#38bdf8; font-weight:700;">PRO MEDIA PRODUCTION</div>
-      </div>
-    </div>
-    <div class="lang-tag">TR | PRO</div>
-  </div>
+<div class="top-bar">
+  <div class="brand"><div class="logo-icon">E</div>EKOKO MEDIA STUDIO</div>
+  <div class="status-badge">● AKTİF SİSTEM</div>
+</div>
 
-  <div class="main-content" id="mainScroll">
-    <div>
-      <div class="welcome-title">Tekrar hoş geldin!</div>
-      <div class="welcome-sub">Bugün ne üretmek istersin?</div>
-    </div>
-
-    <div class="search-bar" id="searchBar">
-      <span id="searchText">Aklındaki fikri anlat...</span>
-      <span>🎙️</span>
-    </div>
-
-    <!-- 9'lu Modül Izgarası -->
-    <div class="grid-container" id="gridSection">
-      <div class="grid-card c-yellow" id="card_proje">
-        <div class="icon">📁</div>
-        <div class="name">Projeler</div>
-      </div>
-      <div class="grid-card c-purple" id="card_atolye">
-        <div class="icon">✂️</div>
-        <div class="name">Üretim Atölyesi</div>
-      </div>
-      <div class="grid-card c-cyan" id="card_sohbet">
-        <div class="icon">💬</div>
-        <div class="name">AI Sohbet</div>
-      </div>
-      <div class="grid-card c-blue" id="card_alan">
-        <div class="icon">🎛️</div>
-        <div class="name">Üretim Alanı</div>
-      </div>
-      <div class="grid-card c-purple" id="card_hayal">
-        <div class="icon">🌌</div>
-        <div class="name">Hayal Dünyası</div>
-      </div>
-      <div class="grid-card c-yellow" id="card_yarisma">
-        <div class="icon">🏆</div>
-        <div class="name">Yarışmalar</div>
-      </div>
-      <div class="grid-card c-cyan" id="card_elestiri">
-        <div class="icon">⚖️</div>
-        <div class="name">Eleştiri Masası</div>
-      </div>
-      <div class="grid-card c-purple" id="card_kutuphane">
-        <div class="icon">📚</div>
-        <div class="name">Kütüphane</div>
-      </div>
-      <div class="grid-card c-blue" id="card_medya">
-        <div class="icon">🗂️</div>
-        <div class="name">Medya / Dosya</div>
-      </div>
-    </div>
-
-    <!-- Kurgu Timeline Paneli -->
-    <div id="studioWorkspace">
-      <div class="monitor-box">
-        <div class="monitor-tag">4K PREVIEW • CİLO DAĞLARI SİNEMATİK</div>
-        <div class="monitor-playhead">▶</div>
-        <div style="font-size: 10px; color:#fff; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:3px; width:fit-content;">00:02:34 / 05:12</div>
-      </div>
-
-      <div class="timeline-box">
-        <div class="red-playhead" id="playhead"></div>
-        <div class="track-row"><span>V1</span><div class="track-clip tc-video">Cilo_Mountain_Cinematic.raw</div></div>
-        <div class="track-row"><span>A1</span><div class="track-clip tc-audio">Voice_Stem_Master.wav</div></div>
-        <div class="track-row"><span>AI</span><div class="track-clip tc-ai">Auto_Color_Grade.ai</div></div>
-      </div>
-    </div>
-
-    <!-- Gewer AI Modülü Tanıtım Kartı -->
-    <div id="gewerCardModal">
-      <div style="font-size: 28px;">🌌</div>
-      <div style="font-size: 20px; font-weight: 900; color: #facc15;">GEWER AI</div>
-      <div style="font-size: 13px; color: #e2e8f0; line-height: 1.4;">Kültürün ruhunu, dengbêj nefesini ve kadim dili doğrudan ekranlara taşıyan yerel yapay zeka motoru.</div>
-      <div style="background: rgba(250,204,21,0.2); border: 1px solid #facc15; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 800; color: #facc15; margin-top: 6px;">ÇOK YAKINDA UYGULAMA İÇERİSİNDE</div>
-    </div>
-
-    <!-- Ses Spektrumu -->
-    <div class="wave-bar-box" id="waveContainer"></div>
-
-    <!-- Altyazı Konsolu -->
-    <div class="sub-console">
-      <div class="sub-text" id="subDisplay">Sunum hazır. Başlat butonuna dokunun...</div>
+<div class="viewport">
+  
+  <div class="page active" id="page1">
+    <div class="welcome-h">Tekrar hoş geldin!</div>
+    <div class="search-box"><span>Fikrini yaz veya söyle...</span><span>🎙️</span></div>
+    <div class="grid-box">
+      <div class="g-card" id="c_proje"><div class="icon">📁</div><div class="title">Projeler</div></div>
+      <div class="g-card" id="c_atolye"><div class="icon">✂️</div><div class="title">Üretim Atölyesi</div></div>
+      <div class="g-card" id="c_sohbet"><div class="icon">💬</div><div class="title">AI Sohbet</div></div>
+      <div class="g-card" id="c_alan"><div class="icon">🎛️</div><div class="title">Üretim Alanı</div></div>
+      <div class="g-card" id="c_hayal"><div class="icon">🌌</div><div class="title">Hayal Dünyası</div></div>
+      <div class="g-card" id="c_yarisma"><div class="icon">🏆</div><div class="title">Yarışmalar</div></div>
+      <div class="g-card" id="c_elestiri"><div class="icon">⚖️</div><div class="title">Eleştiri Masası</div></div>
+      <div class="g-card" id="c_kutuphane"><div class="icon">📚</div><div class="title">Kütüphane</div></div>
+      <div class="g-card" id="c_medya"><div class="icon">🗂️</div><div class="title">Medya Arşivi</div></div>
     </div>
   </div>
 
-  <div class="bottom-dock">
-    <div class="dock-item active"><span>🏠</span><span>Ana Sayfa</span></div>
-    <div class="dock-item"><span>📁</span><span>Projeler</span></div>
-    <div class="dock-plus" id="btnPlus">+</div>
-    <div class="dock-item"><span>📚</span><span>Kütüphane</span></div>
-    <div class="dock-item"><span>⚙️</span><span>Ayarlar</span></div>
+  <div class="page" id="page2">
+    <div class="video-preview">
+      <div class="preview-hud">4K PRO RENDER • CİLO BELGESELİ</div>
+      <div class="play-glow">▶</div>
+    </div>
+    <div class="timeline-wrapper">
+      <div class="playhead-line" id="playhead"></div>
+      <div class="track-item"><span>V1</span><div class="clip-bar bar-v">Cilo_4K_Sinematik.raw</div></div>
+      <div class="track-item"><span>A1</span><div class="clip-bar bar-a">Ses_Kaydi_Dengbej.wav</div></div>
+      <div class="track-item"><span>AI</span><div class="clip-bar bar-ai">Akilli_Renk_Grade.ai</div></div>
+    </div>
   </div>
+
+  <div class="page" id="page3">
+    <div class="chat-box">
+      <div class="chat-msg"><strong>Kullanıcı:</strong> Cilo Dağları için epik bir belgesel sahnesi kurgula.</div>
+      <div class="chat-msg bot"><strong>EKOKO AI:</strong> Sahne 1: Sabah sisi, dengbêj ezgileri eşliğinde 4K geniş açı ve sinematik renk profili oluşturuldu.</div>
+    </div>
+  </div>
+
+  <div class="page" id="page4">
+    <div class="gewer-hero">
+      <div class="gewer-portal">🌌</div>
+      <div style="font-size: 24px; font-weight: 900; color: #facc15;">GEWER AI</div>
+      <div style="font-size: 13px; color: #cbd5e1; max-width: 290px; line-height: 1.5;">
+        Kültürün ruhunu, dengbêj nefesini ve kadim dili ekrana taşıyan yerel yapay zeka modelimiz.
+      </div>
+      <div class="gewer-tag">ÇOK YAKINDA UYGULAMA İÇERİSİNDE</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="dock-footer">
+  <div class="voice-wave" id="waveContainer"></div>
+  <div class="subtitle-text" id="subText">Sunum hazır. Başlat butonuna dokunun...</div>
 </div>
 
 <script>
+  // Ses Dalgaları
   const waveBox = document.getElementById('waveContainer');
-  for(let i = 0; i < 46; i++) {
-    const bar = document.createElement('div');
-    bar.className = 'w-bar';
-    waveBox.appendChild(bar);
+  for(let i=0; i<32; i++) {
+    const b = document.createElement('div');
+    b.className = 'bar';
+    waveBox.appendChild(b);
   }
-  const bars = document.querySelectorAll('.w-bar');
-  let waveInterval = null;
+  const bars = document.querySelectorAll('.bar');
 
-  // Güncellenen Senaryo: EKOKO tamamen aktif, Gewer AI ise yakında uygulama içerisine dahil edilecek modül olarak sunuluyor
-  const presentationSteps = [
+  // Sayfaları Değiştiren Canlı Senaryo Adımları
+  const steps = [
     {
-      text: "EKOKO Media Studio Pro aktif stüdyosuna hoş geldiniz. Doğadan ilham alan, yapay zekayla sınırsız medya üretim platformu.",
-      action: () => focusElement('btnPlus')
+      text: "EKOKO Media Studio aktif üretim platformuna hoş geldiniz.",
+      run: () => showPage('page1')
     },
     {
-      text: "Büyük vizyonumuz, hayal gücünüz ile profesyonel sanat arasındaki soğuk duvarları yıkmaktır.",
-      action: () => {
-        resetFocus();
-        const sb = document.getElementById('searchBar');
-        sb.classList.add('active-search');
-        document.getElementById('searchText').innerText = "Cilo Dağları belgeseli üret...";
+      text: "Projeler, fikirlerinizi kaybolmadan bulutta saklayan yaşayan hafızanızdır.",
+      run: () => highlightCard('c_proje')
+    },
+    {
+      text: "Şimdi profesyonel montaj ve kurgu atölyemize geçiş yapıyoruz.",
+      run: () => {
+        tapElement('c_atolye', () => {
+          showPage('page2');
+          movePlayhead();
+        });
       }
     },
     {
-      text: "Projeler odası, yaşayan dijital hafızanızdır. Tüm kurgularınız bulut senkronizasyonuyla anında erişime hazırdır.",
-      action: () => {
-        document.getElementById('searchBar').classList.remove('active-search');
-        focusElement('card_proje');
-      }
+      text: "Dört K monitör önizlemesi ve çok kanallı zaman çizgisiyle sahnelerinizi özgürce yönetin.",
+      run: () => {}
     },
     {
-      text: "Yapay zeka sohbet modülü, sahne tasarımından metin yazarlığına kadar en bilge yaratıcı sırdaşınızdır.",
-      action: () => focusElement('card_sohbet')
+      text: "Yapay zeka asistanı, senaryodan sahne yönetimine kadar her an yanınızda.",
+      run: () => showPage('page3')
     },
     {
-      text: "Hayal Dünyası ile çok katmanlı sinematik kurgular ve sınır tanımayan görsel evrenler kurarsınız.",
-      action: () => focusElement('card_hayal')
+      text: "Ve EKOKO ekibi olarak geliştirdiğimiz en özel yenilik: Gewer AI!",
+      run: () => showPage('page4')
     },
     {
-      text: "Şimdi Üretim Atölyesi'ne geçiyoruz. Burası zamana duygu dokuyan profesyonel kurgu merkezidir.",
-      action: () => {
-        focusElement('card_atolye');
-        setTimeout(() => openWorkspace(true), 1100);
-      }
-    },
-    {
-      text: "Dört K monitör önizlemesi, ses ve görüntü kanalları ile akıllı kurgu araçları parmaklarınızın ucundadır.",
-      action: () => {
-        const ph = document.getElementById('playhead');
-        let pos = 0;
-        const pInt = setInterval(() => {
-          pos += 5;
-          ph.style.left = pos + '%';
-          if(pos > 85) clearInterval(pInt);
-        }, 120);
-      }
-    },
-    {
-      text: "Eleştiri Masası hakikatin aynası, Kütüphane ise ölümsüz ses ve ışık arşivinizdir.",
-      action: () => {
-        openWorkspace(false);
-        focusElement('card_elestiri');
-        setTimeout(() => focusElement('card_kutuphane'), 1800);
-      }
-    },
-    {
-      text: "Ve stüdyomuz için geliştirdiğimiz en özel yenilik: Gewer AI! Coğrafyamızın ruhunu, dengbêj nefesini ve kadim dili modern ekranlara taşıyan yerel yapay zeka motorumuz...",
-      action: () => showGewerModal()
-    },
-    {
-      text: "Gewer AI, çok yakında doğrudan EKOKO uygulaması içerisinde yerini alacak! EKOKO Media Studio: Sınır yok, sadece yaratım var.",
-      action: () => {}
+      text: "Gewer AI, çok yakında doğrudan EKOKO uygulaması içerisinde sizlerle buluşacak!",
+      run: () => {}
     }
   ];
 
-  let stepIndex = 0;
+  let currentStep = 0;
+  let waveTimer = null;
 
-  function startFullDemo() {
-    document.getElementById('overlayScreen').style.display = 'none';
+  function startShow() {
+    document.getElementById('splash').style.display = 'none';
     startWaves();
-    stepIndex = 0;
-    runNextStep();
+    currentStep = 0;
+    executeStep();
   }
 
-  function runNextStep() {
-    if(stepIndex >= presentationSteps.length) {
+  function executeStep() {
+    if(currentStep >= steps.length) {
       stopWaves();
-      document.getElementById('subDisplay').innerText = "Tanıtım başarıyla tamamlandı.";
+      document.getElementById('subText').innerText = "Tanıtım tamamlandı.";
       return;
     }
 
-    const current = presentationSteps[stepIndex];
-    document.getElementById('subDisplay').innerText = current.text;
-    current.action();
+    const s = steps[currentStep];
+    document.getElementById('subText').innerText = s.text;
+    s.run();
 
-    const utterance = new SpeechSynthesisUtterance(current.text);
-    utterance.lang = 'tr-TR';
-    utterance.rate = 0.95;
-    utterance.pitch = 1.0;
+    const u = new SpeechSynthesisUtterance(s.text);
+    u.lang = 'tr-TR';
+    u.rate = 0.95;
 
-    utterance.onend = () => {
-      stepIndex++;
-      setTimeout(runNextStep, 800);
+    u.onend = () => {
+      currentStep++;
+      setTimeout(executeStep, 800);
     };
 
-    utterance.onerror = () => {
+    u.onerror = () => {
       setTimeout(() => {
-        stepIndex++;
-        runNextStep();
-      }, 5500);
+        currentStep++;
+        executeStep();
+      }, 5000);
     };
 
-    window.speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(u);
   }
 
-  function focusElement(id) {
-    resetFocus();
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function highlightCard(id) {
+    document.querySelectorAll('.g-card').forEach(c => c.classList.remove('highlight'));
     const el = document.getElementById(id);
-    if(!el) return;
-    el.classList.add('active-card');
-
-    const cursor = document.getElementById('virtualCursor');
-    const rect = el.getBoundingClientRect();
-    cursor.style.display = 'block';
-    cursor.style.top = `${rect.top + rect.height/2}px`;
-    cursor.style.left = `${rect.left + rect.width/2}px`;
-
-    cursor.classList.add('click');
-    setTimeout(() => cursor.classList.remove('click'), 400);
+    if(el) el.classList.add('highlight');
   }
 
-  function resetFocus() {
-    document.querySelectorAll('.grid-card').forEach(c => c.classList.remove('active-card'));
+  function tapElement(id, cb) {
+    const el = document.getElementById(id);
+    const cur = document.getElementById('cursor');
+    const r = el.getBoundingClientRect();
+
+    cur.style.display = 'block';
+    cur.style.top = (r.top + r.height/2) + 'px';
+    cur.style.left = (r.left + r.width/2) + 'px';
+
+    setTimeout(() => {
+      cur.classList.add('tap');
+      setTimeout(() => {
+        cur.classList.remove('tap');
+        cur.style.display = 'none';
+        if(cb) cb();
+      }, 350);
+    }, 600);
   }
 
-  function openWorkspace(show) {
-    resetFocus();
-    document.getElementById('studioWorkspace').style.display = show ? 'flex' : 'none';
-    document.getElementById('gridSection').style.display = show ? 'none' : 'grid';
-    document.getElementById('gewerCardModal').style.display = 'none';
-  }
-
-  function showGewerModal() {
-    resetFocus();
-    document.getElementById('studioWorkspace').style.display = 'none';
-    document.getElementById('gridSection').style.display = 'none';
-    document.getElementById('gewerCardModal').style.display = 'flex';
-
-    const cursor = document.getElementById('virtualCursor');
-    cursor.style.display = 'none';
+  function movePlayhead() {
+    const ph = document.getElementById('playhead');
+    let p = 10;
+    const t = setInterval(() => {
+      p += 4;
+      ph.style.left = p + '%';
+      if(p > 85) clearInterval(t);
+    }, 120);
   }
 
   function startWaves() {
-    waveInterval = setInterval(() => {
+    waveTimer = setInterval(() => {
       bars.forEach(b => {
-        const h = Math.floor(Math.random() * 26) + 4;
-        b.style.height = `${h}px`;
+        b.style.height = (Math.floor(Math.random() * 16) + 4) + 'px';
       });
     }, 90);
   }
 
   function stopWaves() {
-    clearInterval(waveInterval);
-    bars.forEach(b => b.style.height = '6px');
+    clearInterval(waveTimer);
+    bars.forEach(b => b.style.height = '4px');
   }
 </script>
 </body>
