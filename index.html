@@ -1,483 +1,448 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>EKOKŌ MEDIA AI STUDIO PRO</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EKOKO Media AI Studio - Canlı Simülasyon</title>
 <style>
-  :root {
-    --glass-bg: rgba(22, 30, 48, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --red: #e63946;
-    --gold: #facc15;
-    --neon-pink: #f72585;
-    --neon-purple: #7209b7;
-    --neon-blue: #3a86ff;
-    --neon-cyan: #4cc9f0;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-  
-  html, body {
-    width: 100%;
-    height: 100%;
-    height: 100dvh;
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: #070b14; color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+  .app-container {
+    position: relative; flex: 1; display: flex; flex-direction: column;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1080&q=80') center top / cover no-repeat;
     overflow: hidden;
-    background: #000;
+  }
+  .bg-dimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(7, 11, 20, 0.45) 0%, rgba(7, 11, 20, 0.88) 60%, #070b14 100%);
+    z-index: 1;
   }
 
-  .mobile-screen {
-    width: 100%;
-    height: 100%;
-    height: 100dvh;
-    background: linear-gradient(180deg, rgba(8, 12, 20, 0.4) 0%, rgba(8, 12, 20, 0.92) 100%), 
-                url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: env(safe-area-inset-top, 10px) 16px env(safe-area-inset-bottom, 8px);
-    position: relative;
+  /* Sanal Parmak / Tıklama İmleci */
+  #virtualCursor {
+    position: absolute; width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(250, 204, 21, 0.45); border: 2px solid #facc15;
+    pointer-events: none; z-index: 9999; display: none; transform: translate(-50%, -50%);
+    box-shadow: 0 0 25px #facc15; transition: all 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  #virtualCursor.click { transform: translate(-50%, -50%) scale(0.7); background: rgba(239, 68, 68, 0.85); border-color: #fff; }
+
+  /* Üst Header */
+  .top-header {
+    position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px;
+  }
+  .brand-box { display: flex; align-items: center; gap: 10px; }
+  .logo-badge { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 900; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+  .brand-title { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+  .lang-tag { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(250, 204, 21, 0.6); color: #facc15; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+
+  /* Canlı Ekran */
+  .main-content {
+    position: relative; z-index: 10; flex: 1; overflow-y: auto; padding: 0 16px 80px;
+    display: flex; flex-direction: column; gap: 12px;
   }
 
-  .top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 8px;
+  .welcome-title { font-size: 24px; font-weight: 800; color: #f8fafc; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+  .welcome-sub { font-size: 13px; color: #cbd5e1; margin-top: -2px; }
+  
+  .search-bar {
+    background: rgba(20, 29, 48, 0.75); border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 22px; padding: 10px 16px; font-size: 13px; color: #94a3b8;
+    display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
   }
-  .brand-left { display: flex; align-items: center; gap: 10px; }
-  .logo-circle {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #ffaa00, #7a1f00);
-    border: 2px solid var(--gold);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px;
-    box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+  .search-bar.active-search { border-color: #facc15; color: #fff; background: rgba(30, 41, 69, 0.95); box-shadow: 0 0 15px rgba(250,204,21,0.4); }
+
+  /* 9'lu Modül Izgarası */
+  .grid-container {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
   }
-  .page-name { font-size: 16px; font-weight: 800; color: #fff; }
-
-  .header-actions { display: flex; align-items: center; gap: 8px; }
-
-  .lang-btn {
-    background: rgba(0, 0, 0, 0.65);
-    border: 1.5px solid var(--gold);
-    color: #fff;
-    padding: 5px 12px;
-    border-radius: 18px;
-    font-size: 11px;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+  .grid-card {
+    background: rgba(18, 26, 44, 0.78); border-radius: 14px; padding: 12px 6px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 2px solid transparent; backdrop-filter: blur(10px); transition: all 0.3s ease;
+    text-align: center; gap: 5px;
   }
-  .lang-btn span.active { color: var(--gold); }
+  .grid-card .icon { font-size: 22px; }
+  .grid-card .name { font-size: 11px; font-weight: 700; color: #f1f5f9; }
+  
+  .c-red { border-color: rgba(239, 68, 68, 0.5); }
+  .c-purple { border-color: rgba(168, 85, 247, 0.5); }
+  .c-cyan { border-color: rgba(56, 189, 248, 0.5); }
+  .c-blue { border-color: rgba(59, 130, 246, 0.5); }
+  .c-yellow { border-color: rgba(250, 204, 21, 0.6); }
 
-  .btn-bell {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: #fff;
-    cursor: pointer;
+  .grid-card.active-card {
+    transform: scale(1.08); box-shadow: 0 0 25px currentColor; z-index: 50;
+    border-color: #fff !important; background: rgba(30, 41, 69, 0.95) !important;
   }
 
-  .greeting-section { margin-top: 4px; }
-  .greeting-section h1 { font-size: 24px; font-weight: 900; color: #fff; line-height: 1.15; }
-  .greeting-section p { font-size: 11.5px; font-weight: 600; color: #e2e8f0; margin-top: 2px; }
+  /* Kurgu Timeline Paneli */
+  #studioWorkspace {
+    display: none; flex-direction: column; gap: 8px; background: rgba(10, 15, 28, 0.96);
+    border: 1px solid #38bdf8; border-radius: 14px; padding: 10px; backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.25); animation: popUp 0.4s ease forwards;
+  }
+  @keyframes popUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-  .search-pill {
-    height: 44px;
-    background: rgba(20, 28, 45, 0.65);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.3);
-    margin: 4px 0;
+  .monitor-box {
+    position: relative; height: 150px; border-radius: 10px; overflow: hidden;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1080&q=80') center/cover no-repeat; border: 1px solid #1e293b;
+    display: flex; flex-direction: column; justify-content: space-between; padding: 8px;
   }
-  .search-left { display: flex; align-items: center; gap: 8px; color: #cbd5e1; font-size: 12px; font-weight: 500; }
-  .mic-icon { font-size: 15px; }
+  .monitor-tag { background: rgba(0,0,0,0.7); color: #facc15; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 4px; width: fit-content; }
+  .monitor-playhead { align-self: center; font-size: 30px; color: #facc15; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8)); }
 
-  .modules-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    flex: 1;
-    align-content: center;
+  .timeline-box {
+    background: #060913; border-radius: 8px; padding: 6px; border: 1px solid #1e293b;
+    display: flex; flex-direction: column; gap: 5px; position: relative; overflow: hidden;
   }
-  .m-card {
-    height: 64px;
-    background: rgba(18, 26, 44, 0.65);
-    backdrop-filter: blur(14px);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 13px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    cursor: pointer;
-    transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
-  }
-  .m-card:active, .m-card.active-glow {
-    transform: scale(0.96);
-    border-color: #fff !important;
-    box-shadow: 0 0 18px rgba(250, 204, 21, 0.65) !important;
+  .red-playhead { position: absolute; top:0; bottom:0; left:0; width: 2px; background: #ef4444; z-index: 10; box-shadow: 0 0 8px #ef4444; }
+  .track-row { height: 22px; background: #0f172a; border-radius: 4px; display: flex; align-items: center; padding: 0 6px; font-size: 9px; font-weight: 700; color: #64748b; }
+  .track-clip { height: 16px; border-radius: 3px; margin-left: 8px; display: flex; align-items: center; padding: 0 6px; color: #fff; font-size: 9px; }
+  .tc-video { background: linear-gradient(90deg, #1d4ed8, #3b82f6); width: 75%; border-left: 3px solid #93c5fd; }
+  .tc-audio { background: linear-gradient(90deg, #6d28d9, #8b5cf6); width: 85%; border-left: 3px solid #c4b5fd; }
+  .tc-ai { background: linear-gradient(90deg, #be185d, #ec4899); width: 60%; border-left: 3px solid #fbcfe8; }
+
+  /* Özel Gewer AI Modülü Paneli */
+  #gewerCardModal {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    background: radial-gradient(circle, rgba(30,27,75,0.95) 0%, rgba(10,15,28,0.98) 100%);
+    border: 2px solid #facc15; border-radius: 16px; padding: 22px 14px; text-align: center; gap: 10px;
+    box-shadow: 0 0 40px rgba(250, 204, 21, 0.4); animation: popUp 0.5s ease forwards;
   }
 
-  .neon-pink { border-color: rgba(247, 37, 133, 0.65); }
-  .neon-purple { border-color: rgba(114, 9, 183, 0.75); }
-  .neon-cyan { border-color: rgba(76, 201, 240, 0.65); }
-  .neon-blue { border-color: rgba(58, 134, 255, 0.65); }
+  /* Ses Spektrumu */
+  .wave-bar-box {
+    height: 36px; background: #090e1a; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; gap: 3px; padding: 0 8px;
+    border: 1px solid rgba(250, 204, 21, 0.4);
+  }
+  .w-bar { width: 3px; background: #22c55e; border-radius: 2px; height: 6px; transition: height 0.08s ease; }
 
-  .m-icon { font-size: 18px; line-height: 1; }
-  .m-label { font-size: 9.5px; font-weight: 700; color: #fff; text-align: center; }
-  .card-center-bot { grid-column: 2; }
+  /* Altyazı Konsolu */
+  .sub-console {
+    background: rgba(6, 9, 17, 0.95); border: 2px solid #facc15; border-radius: 12px;
+    padding: 10px 14px; min-height: 54px; display: flex; align-items: center;
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.25);
+  }
+  .sub-text { font-size: 13px; font-weight: 600; color: #facc15; line-height: 1.4; }
 
-  .subtitle-container {
-    background: rgba(4, 6, 12, 0.96);
-    backdrop-filter: blur(18px);
-    border: 1.5px solid rgba(250, 204, 21, 0.3);
-    border-radius: 14px;
-    padding: 8px 14px;
-    min-height: 72px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 4px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.85);
-    transition: border-color 0.3s;
-  }
-  .subtitle-container.talking {
-    border-color: var(--gold);
-    box-shadow: 0 0 18px rgba(250, 204, 21, 0.35);
-  }
-  .sub-header {
-    font-size: 9.5px;
-    font-weight: 800;
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 3px;
-  }
-  .subtitle-text {
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.4;
-    color: #ffffff;
-    text-align: center;
-  }
-
+  /* Alt Dock */
   .bottom-dock {
-    height: 58px;
-    background: rgba(10, 14, 24, 0.94);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 0 10px;
-    position: relative;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 68px;
+    background: rgba(10, 15, 26, 0.96); border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; justify-content: space-around; align-items: center; z-index: 100;
   }
-  .dock-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    color: #94a3b8;
-    font-size: 9px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 54px;
-  }
-  .dock-item.active { color: var(--red); }
-  .dock-icon { font-size: 16px; }
-
+  .dock-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #94a3b8; font-weight: 600; }
+  .dock-item.active { color: #ef4444; }
   .dock-plus {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff2a4b, #bd0827);
-    border: 3px solid rgba(10, 14, 24, 0.95);
-    box-shadow: 0 4px 16px rgba(230, 57, 70, 0.6);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; color: #fff;
-    cursor: pointer;
-    margin-top: -16px;
+    width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626);
+    display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff;
+    margin-top: -24px; box-shadow: 0 0 18px rgba(239, 68, 68, 0.7); cursor: pointer;
   }
-  .dock-plus:active { transform: scale(0.92); }
+
+  /* Başlangıç Ekranı */
+  .demo-overlay-btn {
+    position: fixed; inset: 0; background: rgba(7, 11, 20, 0.92); z-index: 10000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px;
+  }
+  .start-btn {
+    background: linear-gradient(135deg, #facc15, #f59e0b); color: #000; font-size: 18px; font-weight: 800;
+    padding: 16px 36px; border-radius: 30px; border: none; box-shadow: 0 0 30px rgba(250, 204, 21, 0.7);
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
 
-<div class="mobile-screen">
-  
-  <div class="top-bar">
-    <div class="brand-left">
-      <div class="logo-circle">𓄂𓆃</div>
-      <div class="page-name">EKOKŌ STUDIO PRO</div>
+<div id="virtualCursor"></div>
+
+<div class="demo-overlay-btn" id="overlayScreen">
+  <div style="font-size: 22px; font-weight: 800; color:#facc15; text-align:center;">EKOKO MEDIA AI STUDIO</div>
+  <div style="font-size: 13px; color:#cbd5e1; text-align:center; padding: 0 25px; line-height: 1.5;">
+    Canlı interaktif stüdyo demosu.<br>
+    <strong>Seslendirme otomatik başlayacak ve tüm modüller tanıtılacaktır.</strong>
+  </div>
+  <button class="start-btn" onclick="startFullDemo()">▶ CANLI SUNUMU BAŞLAT</button>
+</div>
+
+<div class="app-container">
+  <div class="bg-dimmer"></div>
+
+  <div class="top-header">
+    <div class="brand-box">
+      <div class="logo-badge">E</div>
+      <div>
+        <div class="brand-title">EKOKO AI STUDIO</div>
+        <div style="font-size: 10px; color:#38bdf8; font-weight:700;">PRO MEDIA PRODUCTION</div>
+      </div>
     </div>
-    <div class="header-actions">
-      <button class="lang-btn" onclick="toggleLang()">
-        🌐 <span id="btn-ku" class="active">KU</span> | <span id="btn-tr">TR</span>
-      </button>
-      <div class="btn-bell" onclick="togglePlayback()">🔔</div>
-    </div>
+    <div class="lang-tag">TR | PRO</div>
   </div>
 
-  <div class="greeting-section">
-    <h1 id="ui-greet">Silav!</h1>
-    <p id="ui-slogan">«Ji xwezayê îlham, bi aqilê çêkirî hilberîna bêsînor.»</p>
-  </div>
-
-  <div class="search-pill" onclick="togglePlayback()">
-    <div class="search-left">
-      <span>🔍</span>
-      <span id="ui-search">Xeyala dilê xwe bêje...</span>
-    </div>
-    <div class="mic-icon">🎙️</div>
-  </div>
-
-  <div class="modules-grid">
-    <div class="m-card neon-pink" id="c-proj">
-      <div class="m-icon">📁</div>
-      <div class="m-label" id="lbl-proj">Proje</div>
-    </div>
-    <div class="m-card neon-purple" id="c-prod">
-      <div class="m-icon">✂️</div>
-      <div class="m-label" id="lbl-prod">Karegeha Hilberînê</div>
-    </div>
-    <div class="m-card neon-cyan" id="c-chat">
-      <div class="m-icon">💬</div>
-      <div class="m-label" id="lbl-chat">Derhênerê Zîrek</div>
+  <div class="main-content" id="mainScroll">
+    <div>
+      <div class="welcome-title">Tekrar hoş geldin!</div>
+      <div class="welcome-sub">Bugün ne üretmek istersin?</div>
     </div>
 
-    <div class="m-card neon-blue" id="c-field">
-      <div class="m-icon">🎛️</div>
-      <div class="m-label" id="lbl-field">Qada Hilberînê</div>
-    </div>
-    <div class="m-card neon-purple" id="c-dream">
-      <div class="m-icon">🌌</div>
-      <div class="m-label" id="lbl-dream">Cîhana Xeyalê</div>
-    </div>
-    <div class="m-card neon-purple" id="c-comp">
-      <div class="m-icon">🏆</div>
-      <div class="m-label" id="lbl-comp">Pêşbirk</div>
+    <div class="search-bar" id="searchBar">
+      <span id="searchText">Aklındaki fikri anlat...</span>
+      <span>🎙️</span>
     </div>
 
-    <div class="m-card neon-blue" id="c-crit">
-      <div class="m-icon">⚖️</div>
-      <div class="m-label" id="lbl-crit">Mêzeya Rexneyê</div>
-    </div>
-    <div class="m-card neon-cyan" id="c-lib">
-      <div class="m-icon">📚</div>
-      <div class="m-label" id="lbl-lib">Pirtûkxane</div>
-    </div>
-    <div class="m-card neon-blue" id="c-media">
-      <div class="m-icon">🗂️</div>
-      <div class="m-label" id="lbl-media">Medya</div>
+    <!-- 9'lu Modül Izgarası -->
+    <div class="grid-container" id="gridSection">
+      <div class="grid-card c-yellow" id="card_proje">
+        <div class="icon">📁</div>
+        <div class="name">Projeler</div>
+      </div>
+      <div class="grid-card c-purple" id="card_atolye">
+        <div class="icon">✂️</div>
+        <div class="name">Üretim Atölyesi</div>
+      </div>
+      <div class="grid-card c-cyan" id="card_sohbet">
+        <div class="icon">💬</div>
+        <div class="name">AI Sohbet</div>
+      </div>
+      <div class="grid-card c-blue" id="card_alan">
+        <div class="icon">🎛️</div>
+        <div class="name">Üretim Alanı</div>
+      </div>
+      <div class="grid-card c-purple" id="card_hayal">
+        <div class="icon">🌌</div>
+        <div class="name">Hayal Dünyası</div>
+      </div>
+      <div class="grid-card c-yellow" id="card_yarisma">
+        <div class="icon">🏆</div>
+        <div class="name">Yarışmalar</div>
+      </div>
+      <div class="grid-card c-cyan" id="card_elestiri">
+        <div class="icon">⚖️</div>
+        <div class="name">Eleştiri Masası</div>
+      </div>
+      <div class="grid-card c-purple" id="card_kutuphane">
+        <div class="icon">📚</div>
+        <div class="name">Kütüphane</div>
+      </div>
+      <div class="grid-card c-blue" id="card_medya">
+        <div class="icon">🗂️</div>
+        <div class="name">Medya / Dosya</div>
+      </div>
     </div>
 
-    <div class="m-card neon-blue card-center-bot" id="c-sett">
-      <div class="m-icon">⚙️</div>
-      <div class="m-label" id="lbl-sett">Mîheng</div>
-    </div>
-  </div>
+    <!-- Kurgu Timeline Paneli -->
+    <div id="studioWorkspace">
+      <div class="monitor-box">
+        <div class="monitor-tag">4K PREVIEW • CİLO DAĞLARI SİNEMATİK</div>
+        <div class="monitor-playhead">▶</div>
+        <div style="font-size: 10px; color:#fff; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:3px; width:fit-content;">00:02:34 / 05:12</div>
+      </div>
 
-  <div class="subtitle-container" id="subBox">
-    <div class="sub-header" id="subTitle">EKOKO MEDIA AI STUDIO PRO</div>
-    <div class="subtitle-text" id="subText">
-      Ji bo destpêkirinê li mîkrofonê an bişkoka sor (+) bixe.
+      <div class="timeline-box">
+        <div class="red-playhead" id="playhead"></div>
+        <div class="track-row"><span>V1</span><div class="track-clip tc-video">Cilo_Mountain_Cinematic.raw</div></div>
+        <div class="track-row"><span>A1</span><div class="track-clip tc-audio">Voice_Stem_Master.wav</div></div>
+        <div class="track-row"><span>AI</span><div class="track-clip tc-ai">Auto_Color_Grade.ai</div></div>
+      </div>
+    </div>
+
+    <!-- Gewer AI Modülü Tanıtım Kartı -->
+    <div id="gewerCardModal">
+      <div style="font-size: 28px;">🌌</div>
+      <div style="font-size: 20px; font-weight: 900; color: #facc15;">GEWER AI</div>
+      <div style="font-size: 13px; color: #e2e8f0; line-height: 1.4;">Kültürün ruhunu, dengbêj nefesini ve kadim dili doğrudan ekranlara taşıyan yerel yapay zeka motoru.</div>
+      <div style="background: rgba(250,204,21,0.2); border: 1px solid #facc15; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 800; color: #facc15; margin-top: 6px;">ÇOK YAKINDA UYGULAMA İÇERİSİNDE</div>
+    </div>
+
+    <!-- Ses Spektrumu -->
+    <div class="wave-bar-box" id="waveContainer"></div>
+
+    <!-- Altyazı Konsolu -->
+    <div class="sub-console">
+      <div class="sub-text" id="subDisplay">Sunum hazır. Başlat butonuna dokunun...</div>
     </div>
   </div>
 
   <div class="bottom-dock">
-    <div class="dock-item active">
-      <div class="dock-icon">🏠</div>
-      <span id="dock-home">Destpêk</span>
-    </div>
-    <div class="dock-item">
-      <div class="dock-icon">📁</div>
-      <span id="dock-proj">Proje</span>
-    </div>
-
-    <div class="dock-plus" onclick="togglePlayback()">+</div>
-
-    <div class="dock-item">
-      <div class="dock-icon">📚</div>
-      <span>Pirtûkxane</span>
-    </div>
-    <div class="dock-item">
-      <div class="dock-icon">⚙️</div>
-      <span>Mîheng</span>
-    </div>
+    <div class="dock-item active"><span>🏠</span><span>Ana Sayfa</span></div>
+    <div class="dock-item"><span>📁</span><span>Projeler</span></div>
+    <div class="dock-plus" id="btnPlus">+</div>
+    <div class="dock-item"><span>📚</span><span>Kütüphane</span></div>
+    <div class="dock-item"><span>⚙️</span><span>Ayarlar</span></div>
   </div>
-
 </div>
 
 <script>
-let currentLang = 'KU';
-let isRunning = false;
-let audio = new Audio();
-let activeTarget = null;
+  const waveBox = document.getElementById('waveContainer');
+  for(let i = 0; i < 46; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'w-bar';
+    waveBox.appendChild(bar);
+  }
+  const bars = document.querySelectorAll('.w-bar');
+  let waveInterval = null;
 
-// KU: 74 SANİYE | TR: 64 SANİYE TAM BÖLÜM VE VURGU ZAMANLARI
-const SYNC_DATA = {
-  KU: {
-    sources: [
-      'kurdish%20(online-audio-converter.com).mp3',
-      'kurdish (online-audio-converter.com).mp3',
-      'ses-ku.mp3',
-      'ses-ku.wav'
-    ],
-    greet: "Silav!",
-    slogan: "«Ji xwezayê îlham, bi aqilê çêkirî hilberîna bêsînor.»",
-    search: "Xeyala dilê xwe bêje...",
-    readyText: "Ji bo destpêkirinê li mîkrofonê an bişkoka sor (+) bixe.",
-    doneText: "Pêşkêşiya EKOKO bi serkeftî qediya.",
-    labels: {
-      proj: "Proje", prod: "Karegeha Hilberînê", chat: "Derhênerê Zîrek",
-      field: "Qada Hilberînê", dream: "Cîhana Xeyalê", comp: "Pêşbirk",
-      crit: "Mêzeya Rexneyê", lib: "Pirtûkxane", media: "Medya", sett: "Mîheng"
+  // Güncellenen Senaryo: EKOKO tamamen aktif, Gewer AI ise yakında uygulama içerisine dahil edilecek modül olarak sunuluyor
+  const presentationSteps = [
+    {
+      text: "EKOKO Media Studio Pro aktif stüdyosuna hoş geldiniz. Doğadan ilham alan, yapay zekayla sınırsız medya üretim platformu.",
+      action: () => focusElement('btnPlus')
     },
-    cues: [
-      { start: 0.0, end: 6.5, target: 'c-prod', title: "DESTPÊK", text: "EKOKO Media Studio AI. Ji xwezayê îlham, bi aqilê çêkirî hilberîna bêsînor." },
-      { start: 6.5, end: 13.5, target: 'c-prod', title: "I. DÎTINA MEZIN", text: "Dîtina mezin EKOKO: Dîwarên sar ên navbera îlhamê û hunerê hildiweşîne." },
-      { start: 13.5, end: 19.5, target: 'c-prod', title: "I. DÎTINA MEZIN", text: "Li vir mirov ne koleyê amûran e, Derhênerê Hunerî ye." },
-      { start: 19.5, end: 28.0, target: 'c-prod', title: "I. DÎTINA MEZIN", text: "EKOKO hevalekî zana ye ku cîhana di hişê te de hîs dike, qalipên bêrûh red dike û montajeke resen diafirîne." },
-      { start: 28.0, end: 36.5, target: 'c-chat', title: "II. ODEYÊN AFIRANDINÊ", text: "Odeyên afirandinê: Rûpela Sereke nabza fikrê ye. Proje bîra zindî ye. Karegeha Hilberînê demê bi hest dixemilîne." },
-      { start: 36.5, end: 42.5, target: 'c-chat', title: "II. ODEYÊN AFIRANDINÊ", text: "Derhênerê Zîrek di sêwirandina sahnayan de rêhevalê te ye." },
-      { start: 42.5, end: 49.5, target: 'c-field', title: "II. ODEYÊN AFIRANDINÊ", text: "Qada Hilberînê 14 asoyên medyayê, Cîhana Xeyalê jî çîroka 15-astî ava dike." },
-      { start: 49.5, end: 57.0, target: 'c-crit', title: "II. ODEYÊN AFIRANDINÊ", text: "Mêzeya Rexneyê neynika heqîqetê ye. Pêşbirk rûmeta hunerê, Pirtûkxane jî ronahî û awazên nemir diparêze." },
-      { start: 57.0, end: 63.5, target: 'c-dream', title: "III. GEWER AI", text: "Gewer AI û rûhê çandê: Di dilê vê stûdyoyê de Gewer AI; edebiyata devkî, nefesa dengbêjiyê û kûrahiya kurdî tîne ser ekranên nûjen." },
-      { start: 63.5, end: 68.0, target: 'c-dream', title: "III. GEWER AI", text: "Ew ji wergera sar dûr e; canê peyvan û rûhê erdnîgariya me dixe nav dîmenan." },
-      { start: 68.0, end: 71.5, target: 'c-dream', title: "III. GEWER AI", text: "Projeya me ya Gewer AI bi hişmendiya neteweyî û hesta berpirsiyariya exlaqî hatiye pêşxistin." },
-      { start: 71.5, end: 74.5, target: 'c-dream', title: "DAWÎ", text: "Jiyan bi kurdî xweş e." }
-    ]
-  },
-  TR: {
-    sources: [
-      'Audio%20Export.mp3',
-      'Audio Export.mp3',
-      'ses-tr.mp3',
-      'ses-tr.wav'
-    ],
-    greet: "Merhaba!",
-    slogan: "«Doğadan ilham, yapay zekayla sınırsız üretim.»",
-    search: "Aklındaki fikri anlat...",
-    readyText: "Başlatmak için mikrofona veya kırmızı '+' butonuna dokunun.",
-    doneText: "EKOKO manifestosu sunumu başarıyla tamamlandı.",
-    labels: {
-      proj: "Projeler", prod: "Üretim Atölyesi", chat: "Akıllı Yönetmen",
-      field: "Üretim Alanı", dream: "Hayal Dünyası", comp: "Yarışmalar",
-      crit: "Eleştiri Masası", lib: "Kütüphane", media: "Medya", sett: "Ayarlar"
+    {
+      text: "Büyük vizyonumuz, hayal gücünüz ile profesyonel sanat arasındaki soğuk duvarları yıkmaktır.",
+      action: () => {
+        resetFocus();
+        const sb = document.getElementById('searchBar');
+        sb.classList.add('active-search');
+        document.getElementById('searchText').innerText = "Cilo Dağları belgeseli üret...";
+      }
     },
-    cues: [
-      { start: 0.0, end: 5.0, target: 'c-prod', title: "GİRİŞ", text: "EKOKO Media Studio Pro. Doğadan ilham, yapay zekayla sınırsız üretim." },
-      { start: 5.0, end: 11.0, target: 'c-prod', title: "I. BÜYÜK VİZYON", text: "Büyük vizyon EKOKO: İlham ile sanat arasındaki soğuk duvarları yıkar." },
-      { start: 11.0, end: 16.0, target: 'c-prod', title: "I. BÜYÜK VİZYON", text: "Burada insan araçların kölesi değil, Sanat Yönetmenidir." },
-      { start: 16.0, end: 24.5, target: 'c-prod', title: "I. BÜYÜK VİZYON", text: "EKOKO zihnindeki dünyayı hisseden, ruhsuz şablonları reddeden ve sana özel özgün bir kurgu inşa eden bilge bir yol arkadaşıdır." },
-      { start: 24.5, end: 32.0, target: 'c-chat', title: "II. ÜRETİM ODALARI", text: "Üretim odaları: Ana Sayfa fikrin nabzıdır. Projeler yaşayan hafızadır. Üretim Atölyesi zamana duygu dokur." },
-      { start: 32.0, end: 36.5, target: 'c-chat', title: "II. ÜRETİM ODALARI", text: "Akıllı Yönetmen sahne tasarımında sırdaşındır." },
-      { start: 36.5, end: 43.0, target: 'c-field', title: "II. ÜRETİM ODALARI", text: "Üretim Alanı 14 medya ufkunu, Hayal Dünyası ise 15 aşamalı hikâyeyi kurar." },
-      { start: 43.0, end: 50.0, target: 'c-crit', title: "II. ÜRETİM ODALARI", text: "Eleştiri Masası hakikatin aynasıdır. Yarışmalar sanatın onurunu, Kütüphane ise ölümsüz ışık ve melodileri saklar." },
-      { start: 50.0, end: 56.0, target: 'c-dream', title: "III. GEVER YAPAY ZEKA", text: "Gever Yapay Zeka ve kültürün ruhu: Bu stüdyonun kalbinde yer alan bin yıllık sözlü edebiyatı, dengbêj nefesini ve kadim dili modern ekranlara taşır." },
-      { start: 56.0, end: 60.0, target: 'c-dream', title: "III. GEVER YAPAY ZEKA", text: "Soğuk çevirilerden uzaktır; kelimelerin canını ve coğrafyamızın ruhunu doğrudan karelere işler." },
-      { start: 60.0, end: 64.5, target: 'c-dream', title: "III. GEVER YAPAY ZEKA", text: "Gever Yapay Zeka projesi tamamen vicdani bir sorumlulukla, ulusal bilinçle yapıldı." }
-    ]
-  }
-};
-
-function toggleLang() {
-  if (isRunning) togglePlayback();
-  currentLang = (currentLang === 'KU') ? 'TR' : 'KU';
-  const data = SYNC_DATA[currentLang];
-
-  document.getElementById('btn-ku').classList.toggle('active', currentLang === 'KU');
-  document.getElementById('btn-tr').classList.toggle('active', currentLang === 'TR');
-
-  document.getElementById('ui-greet').innerText = data.greet;
-  document.getElementById('ui-slogan').innerText = data.slogan;
-  document.getElementById('ui-search').innerText = data.search;
-  document.getElementById('subText').innerText = data.readyText;
-  document.getElementById('subTitle').innerText = `EKOKO MEDIA AI STUDIO PRO`;
-
-  for (const [key, val] of Object.entries(data.labels)) {
-    const el = document.getElementById(`lbl-${key}`);
-    if (el) el.innerText = val;
-    const dockEl = document.getElementById(`dock-${key}`);
-    if (dockEl) dockEl.innerText = val;
-  }
-}
-
-// Ses dosyasını sırayla kaynak listesinden bulup çalan akıllı fonksiyon
-function tryPlayAudio(sourceList, index = 0) {
-  if (index >= sourceList.length) {
-    document.getElementById('subText').innerText = "Ses dosyası bulunamadı. Lütfen GitHub'a yüklendiğinden emin olun.";
-    isRunning = false;
-    return;
-  }
-
-  audio.src = sourceList[index];
-  audio.currentTime = 0;
-  
-  audio.play().then(() => {
-    isRunning = true;
-    document.getElementById('subBox').classList.add('talking');
-  }).catch(() => {
-    tryPlayAudio(sourceList, index + 1);
-  });
-}
-
-audio.ontimeupdate = () => {
-  if (!isRunning) return;
-  const t = audio.currentTime;
-  const cues = SYNC_DATA[currentLang].cues;
-  const activeCue = cues.find(c => t >= c.start && t < c.end);
-
-  if (activeCue) {
-    document.getElementById('subTitle').innerText = activeCue.title;
-    document.getElementById('subText').innerText = activeCue.text;
-    document.getElementById('subBox').classList.add('talking');
-
-    if (activeTarget !== activeCue.target) {
-      document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-      const el = document.getElementById(activeCue.target);
-      if (el) el.classList.add('active-glow');
-      activeTarget = activeCue.target;
+    {
+      text: "Projeler odası, yaşayan dijital hafızanızdır. Tüm kurgularınız bulut senkronizasyonuyla anında erişime hazırdır.",
+      action: () => {
+        document.getElementById('searchBar').classList.remove('active-search');
+        focusElement('card_proje');
+      }
+    },
+    {
+      text: "Yapay zeka sohbet modülü, sahne tasarımından metin yazarlığına kadar en bilge yaratıcı sırdaşınızdır.",
+      action: () => focusElement('card_sohbet')
+    },
+    {
+      text: "Hayal Dünyası ile çok katmanlı sinematik kurgular ve sınır tanımayan görsel evrenler kurarsınız.",
+      action: () => focusElement('card_hayal')
+    },
+    {
+      text: "Şimdi Üretim Atölyesi'ne geçiyoruz. Burası zamana duygu dokuyan profesyonel kurgu merkezidir.",
+      action: () => {
+        focusElement('card_atolye');
+        setTimeout(() => openWorkspace(true), 1100);
+      }
+    },
+    {
+      text: "Dört K monitör önizlemesi, ses ve görüntü kanalları ile akıllı kurgu araçları parmaklarınızın ucundadır.",
+      action: () => {
+        const ph = document.getElementById('playhead');
+        let pos = 0;
+        const pInt = setInterval(() => {
+          pos += 5;
+          ph.style.left = pos + '%';
+          if(pos > 85) clearInterval(pInt);
+        }, 120);
+      }
+    },
+    {
+      text: "Eleştiri Masası hakikatin aynası, Kütüphane ise ölümsüz ses ve ışık arşivinizdir.",
+      action: () => {
+        openWorkspace(false);
+        focusElement('card_elestiri');
+        setTimeout(() => focusElement('card_kutuphane'), 1800);
+      }
+    },
+    {
+      text: "Ve stüdyomuz için geliştirdiğimiz en özel yenilik: Gewer AI! Coğrafyamızın ruhunu, dengbêj nefesini ve kadim dili modern ekranlara taşıyan yerel yapay zeka motorumuz...",
+      action: () => showGewerModal()
+    },
+    {
+      text: "Gewer AI, çok yakında doğrudan EKOKO uygulaması içerisinde yerini alacak! EKOKO Media Studio: Sınır yok, sadece yaratım var.",
+      action: () => {}
     }
-  }
-};
+  ];
 
-audio.onended = () => {
-  isRunning = false;
-  document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-  document.getElementById('subBox').classList.remove('talking');
-  document.getElementById('subTitle').innerText = `DAWÎ / SON`;
-  document.getElementById('subText').innerText = SYNC_DATA[currentLang].doneText;
-};
+  let stepIndex = 0;
 
-function togglePlayback() {
-  if (isRunning) {
-    isRunning = false;
-    audio.pause();
-    document.querySelectorAll('.m-card').forEach(b => b.classList.remove('active-glow'));
-    document.getElementById('subBox').classList.remove('talking');
-    document.getElementById('subText').innerText = "Pêşkêşî sekinî / Durduruldu.";
-    return;
+  function startFullDemo() {
+    document.getElementById('overlayScreen').style.display = 'none';
+    startWaves();
+    stepIndex = 0;
+    runNextStep();
   }
 
-  tryPlayAudio(SYNC_DATA[currentLang].sources, 0);
-}
+  function runNextStep() {
+    if(stepIndex >= presentationSteps.length) {
+      stopWaves();
+      document.getElementById('subDisplay').innerText = "Tanıtım başarıyla tamamlandı.";
+      return;
+    }
+
+    const current = presentationSteps[stepIndex];
+    document.getElementById('subDisplay').innerText = current.text;
+    current.action();
+
+    const utterance = new SpeechSynthesisUtterance(current.text);
+    utterance.lang = 'tr-TR';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    utterance.onend = () => {
+      stepIndex++;
+      setTimeout(runNextStep, 800);
+    };
+
+    utterance.onerror = () => {
+      setTimeout(() => {
+        stepIndex++;
+        runNextStep();
+      }, 5500);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function focusElement(id) {
+    resetFocus();
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.add('active-card');
+
+    const cursor = document.getElementById('virtualCursor');
+    const rect = el.getBoundingClientRect();
+    cursor.style.display = 'block';
+    cursor.style.top = `${rect.top + rect.height/2}px`;
+    cursor.style.left = `${rect.left + rect.width/2}px`;
+
+    cursor.classList.add('click');
+    setTimeout(() => cursor.classList.remove('click'), 400);
+  }
+
+  function resetFocus() {
+    document.querySelectorAll('.grid-card').forEach(c => c.classList.remove('active-card'));
+  }
+
+  function openWorkspace(show) {
+    resetFocus();
+    document.getElementById('studioWorkspace').style.display = show ? 'flex' : 'none';
+    document.getElementById('gridSection').style.display = show ? 'none' : 'grid';
+    document.getElementById('gewerCardModal').style.display = 'none';
+  }
+
+  function showGewerModal() {
+    resetFocus();
+    document.getElementById('studioWorkspace').style.display = 'none';
+    document.getElementById('gridSection').style.display = 'none';
+    document.getElementById('gewerCardModal').style.display = 'flex';
+
+    const cursor = document.getElementById('virtualCursor');
+    cursor.style.display = 'none';
+  }
+
+  function startWaves() {
+    waveInterval = setInterval(() => {
+      bars.forEach(b => {
+        const h = Math.floor(Math.random() * 26) + 4;
+        b.style.height = `${h}px`;
+      });
+    }, 90);
+  }
+
+  function stopWaves() {
+    clearInterval(waveInterval);
+    bars.forEach(b => b.style.height = '6px');
+  }
 </script>
-
 </body>
 </html>
