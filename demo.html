@@ -1,1 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EKOKO Media AI Studio Pro</title>
+<style>
+  :root {
+    --bg-base: #05070d;
+    --bg-surface: rgba(13, 18, 30, 0.85);
+    --border: rgba(255, 255, 255, 0.08);
+    --amber: #f59e0b;
+    --cyan: #06b6d4;
+    --purple: #8b5cf6;
+    --emerald: #10b981;
+    --rose: #f43f5e;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg-base); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
+  #pointer {
+    position: fixed; width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(245, 158, 11, 0.35); border: 2px solid #fbbf24;
+    box-shadow: 0 0 25px #f59e0b; pointer-events: none; z-index: 999999;
+    transform: translate(-50%, -50%); display: none; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #pointer.tap { transform: translate(-50%, -50%) scale(0.65); background: rgba(244, 63, 94, 0.95); border-color: #fff; }
+
+  header {
+    height: 48px; background: rgba(8, 12, 20, 0.95); border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; padding: 0 16px; z-index: 100;
+  }
+  .brand-group { display: flex; align-items: center; gap: 10px; }
+  .logo {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px; color: #fff; box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  }
+  .brand-title { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
+  .sys-badge { font-size: 9px; font-weight: 800; color: var(--amber); background: rgba(245,158,11,0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.3); }
+
+  .os-desktop {
+    flex: 1; display: grid; grid-template-columns: 240px 1fr 280px;
+    background: radial-gradient(circle at 50% 20%, rgba(15, 23, 42, 0.6) 0%, rgba(5, 7, 13, 1) 100%);
+    overflow: hidden; position: relative;
+  }
+  .panel-left, .panel-right {
+    background: var(--bg-surface); border-color: var(--border);
+    display: flex; flex-direction: column; backdrop-filter: blur(12px);
+  }
+  .panel-left { border-right: 1px solid var(--border); }
+  .panel-right { border-left: 1px solid var(--border); }
+  .sec-title { padding: 10px 14px; font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+
+  .pipeline-flow { padding: 10px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex: 1; }
+  .pipe-step {
+    padding: 7px 10px; border-radius: 6px; font-size: 11px; color: #cbd5e1;
+    display: flex; align-items: center; gap: 8px; border: 1px solid transparent; transition: all 0.3s;
+  }
+  .pipe-step.active { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fff; font-weight: 700; }
+
+  .center-stage { display: flex; flex-direction: column; padding: 12px; gap: 10px; position: relative; }
+  .monitor-frame {
+    flex: 1; border-radius: 12px; overflow: hidden; position: relative;
+    background: #000; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .viewport-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+    transition: all 0.8s ease;
+  }
+  .viewport-bg.ai-graded { filter: contrast(1.15) saturate(1.35) hue-rotate(-5deg); }
+
+  .hud-top {
+    position: relative; z-index: 10; display: flex; justify-content: space-between;
+    padding: 10px 14px; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+  .hud-badge { font-size: 10px; font-weight: 700; color: var(--cyan); background: rgba(6,182,212,0.15); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(6,182,212,0.3); }
+
+  .center-badge {
+    position: relative; z-index: 10; align-self: center; background: rgba(0,0,0,0.65);
+    border: 1px solid rgba(245, 158, 11, 0.5); padding: 8px 18px; border-radius: 20px;
+    font-size: 12px; font-weight: 800; color: var(--amber); box-shadow: 0 0 25px rgba(245,158,11,0.3);
+  }
+
+  .director-feed { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+  .director-card {
+    padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.4;
+    background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.06);
+  }
+  .director-card.lead { border-left: 3px solid var(--amber); }
+  .director-card.critic { border-left: 3px solid var(--rose); }
+
+  #gewerModal {
+    position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(17, 24, 39, 0.97) 0%, rgba(5, 7, 13, 0.99) 100%);
+    z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; gap: 14px;
+  }
+  .gewer-sphere {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fbbf24, #7c3aed 75%);
+    box-shadow: 0 0 50px rgba(251, 191, 36, 0.6);
+    display: flex; align-items: center; justify-content: center; font-size: 40px;
+  }
+
+  .timeline-rack {
+    height: 150px; background: rgba(6, 9, 15, 0.98); border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; padding: 8px 14px; gap: 6px; z-index: 50; position: relative;
+  }
+  .tracks-lane { flex: 1; display: flex; flex-direction: column; gap: 5px; position: relative; overflow: hidden; }
+  .playhead-needle {
+    position: absolute; top: 0; bottom: 0; left: 8%; width: 2px;
+    background: #ef4444; z-index: 90; box-shadow: 0 0 10px #ef4444;
+  }
+  .track-unit {
+    height: 24px; background: rgba(15, 23, 42, 0.8); border-radius: 5px;
+    display: flex; align-items: center; padding: 0 8px; font-size: 9px; font-weight: 700; color: #64748b;
+  }
+  .clip-box { height: 18px; border-radius: 4px; margin-left: 8px; display: flex; align-items: center; padding: 0 8px; color: #fff; font-size: 9px; }
+  .c-v { width: 75%; background: linear-gradient(90deg, #1e40af, #3b82f6); }
+  .c-a { width: 85%; background: linear-gradient(90deg, #6d28d9, #8b5cf6); }
+  .c-e { width: 68%; background: linear-gradient(90deg, #be185d, #ec4899); }
+
+  .footer-sub {
+    height: 56px; background: #03050a; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100;
+  }
+  .audio-meter { display: flex; align-items: center; gap: 3px; height: 20px; width: 80px; }
+  .meter-bar { width: 3px; height: 4px; background: var(--emerald); border-radius: 2px; transition: height 0.08s; }
+  .director-speech { flex: 1; font-size: 13px; font-weight: 600; color: #fbbf24; text-align: center; padding: 0 20px; }
+
+  .splash-curtain {
+    position: fixed; inset: 0; background: rgba(5, 7, 13, 0.98); z-index: 9999999;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; padding: 24px; text-align: center;
+  }
+  .start-btn {
+    background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-size: 15px; font-weight: 900;
+    padding: 14px 34px; border-radius: 30px; border: none; box-shadow: 0 0 30px var(--amber-glow);
+    cursor: pointer;
+  }
+  @media (max-width: 820px) {
+    .os-desktop { grid-template-columns: 1fr; grid-template-rows: 240px 1fr; }
+    .panel-left, .panel-right { display: none; }
+    .timeline-rack { height: 135px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pointer"></div>
+
+<div class="splash-curtain" id="splash">
+  <div style="font-size: 26px; font-weight: 900; color: #fbbf24;">EKOKO MEDIA AI STUDIO</div>
+  <div style="font-size: 13px; color: #94a3b8; max-width: 360px; line-height: 1.6;">
+    Yapay Zekâ Destekli Yaratıcı Prodüksiyon İşletim Sistemi.<br>
+    AI Director yönetiminde 14 aşamalı canlı kurgu ve Gewer AI sunumu.
+  </div>
+  <button class="start-btn" onclick="startStudioOS()">▶ SİSTEM SUNUMUNU BAŞLAT</button>
+</div>
+
+<header>
+  <div class="brand-group">
+    <div class="logo">E</div>
+    <div class="brand-title">EKOKO MEDIA AI STUDIO</div>
+    <div class="sys-badge">OS v2.4 PRO</div>
+  </div>
+  <div style="font-size:11px; color:#10b981; font-weight:700;">● AI DIRECTOR AKTİF</div>
+</header>
+
+<div class="os-desktop">
+  <div class="panel-left">
+    <div class="sec-title">14 AŞAMALI ÜRETİM ZİNCİRİ</div>
+    <div class="pipeline-flow">
+      <div class="pipe-step" id="p_fikir">💡 01. Fikir & Vizyon</div>
+      <div class="pipe-step" id="p_kesif">🔍 02. Yaratıcı Keşif</div>
+      <div class="pipe-step" id="p_hikaye">📖 03. Hikâye & Senaryo</div>
+      <div class="pipe-step" id="p_storyboard">📐 04. Storyboard & Sahne</div>
+      <div class="pipe-step" id="p_gorsel">🎨 05. Nöral Görsel Üretim</div>
+      <div class="pipe-step" id="p_ses">🎙️ 06. Ses, Vokal & Dengbêj</div>
+      <div class="pipe-step" id="p_kurgu">✂️ 07. Multi-Track Kurgu</div>
+      <div class="pipe-step" id="p_analiz">⚖️ 08. Eleştirel Analiz</div>
+      <div class="pipe-step" id="p_izleyici">👥 09. İzleyici Simülasyonu</div>
+      <div class="pipe-step" id="p_final">🏆 10. Final Master Eser</div>
+    </div>
+  </div>
+
+  <div class="center-stage">
+    <div class="monitor-frame">
+      <div class="viewport-bg" id="monitorScreen"></div>
+      <div class="hud-top">
+        <div class="hud-badge">CANLI MONİTÖR • 4K DCI 60FPS</div>
+        <div style="font-size:11px; font-family:monospace; color:#fff;">00:01:24:08</div>
+      </div>
+      <div class="center-badge">👑 AI DIRECTOR DEVREDE</div>
+      <div style="position:relative; z-index:10; padding:10px 14px; background:linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%); font-size:11px;">
+        PROJE: <strong>Cilo Dağları Sinematik Belgeseli</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div class="sec-title">TEMEL ZEKA SİSTEMLERİ</div>
+    <div class="director-feed">
+      <div class="director-card lead" id="boxDirector">
+        <strong>👑 AI Director:</strong> Prodüksiyon zinciri koordine ediliyor.
+      </div>
+      <div class="director-card" id="boxBrain">
+        <strong>🧠 Project Brain:</strong> Sahne hafızası ve estetik tutarlılık %100 doğrulandı.
+      </div>
+      <div class="director-card critic" id="boxCritic">
+        <strong>⚖️ Creative Critic:</strong> Ritim ve kadraj analizi tamamlandı.
+      </div>
+    </div>
+  </div>
+
+  <div id="gewerModal">
+    <div class="gewer-sphere">🌌</div>
+    <div style="font-size:26px; font-weight:900; color:#fbbf24;">GEWER AI ÇEKİRDEĞİ</div>
+    <div style="font-size:13px; color:#cbd5e1; max-width:480px; line-height:1.6;">
+      Kadim dili, edebiyatı ve dengbêj nefesini doğrudan yapay zekâ kurgu ekranlarına taşıyan yerel kültürel zekâ modelimiz.
+    </div>
+    <div style="background:rgba(251,191,36,0.15); border:1.5px solid #fbbf24; color:#fbbf24; font-size:11px; font-weight:800; padding:6px 18px; border-radius:20px;">ÇOK YAKINDA DOĞRUDAN EKOKO İÇERİSİNDE</div>
+  </div>
+</div>
+
+<div class="timeline-rack">
+  <div style="font-size:10px; color:var(--muted); display:flex; justify-content:space-between;">
+    <div><strong>EMOTIONAL TIMELINE:</strong> Multi-Track Canlı Kurgu</div>
+    <div>RENDER: NEURAL 8K RAW</div>
+  </div>
+  <div class="tracks-lane">
+    <div class="playhead-needle" id="needle"></div>
+    <div class="track-unit"><span>V1</span><div class="clip-box c-v">Cilo_Mountain_Cinematic_4K.raw</div></div>
+    <div class="track-unit"><span>A1</span><div class="clip-box c-a" id="clipA">Dengbej_Isolated_Acoustic_Master.wav</div></div>
+    <div class="track-unit"><span>EMO</span><div class="clip-box c-e">Duygusal_Ritim_Egrisi.ai</div></div>
+  </div>
+</div>
+
+<div class="footer-sub">
+  <div class="audio-meter" id="meterWrap"></div>
+  <div class="director-speech" id="speechOut">EKOKO İşletim Sistemi hazır.</div>
+  <div style="font-size:10px; font-weight:800; color:#ef4444;">● LIVE</div>
+</div>
+
+<script>
+  const meterWrap = document.getElementById('meterWrap');
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    b.className = 'meter-bar';
+    meterWrap.appendChild(b);
+  }
+  const bars = document.querySelectorAll('.meter-bar');
+  let meterTimer = null;
+
+  const studioScript = [
+    {
+      text: "EKOKO Media AI Studio'ya hoş geldiniz. Burası dağınık araçları tek bir yapay zekâ üretim işletim sisteminde birleştiren yeni nesil medya platformudur.",
+      run: () => activateStep('p_fikir')
+    },
+    {
+      text: "Sistemin merkezinde sıradan bir sohbet botu değil; tüm prodüksiyonu yöneten, hikâye danışmanı ve koordinatör gibi çalışan AI Director yer alır.",
+      run: () => focusCard('boxDirector')
+    },
+    {
+      text: "Fikirden nihai esere uzanan on dört aşamalı üretim zinciri devrededir: Yaratıcı keşif, hikâye, senaryo ve storyboard aşamaları otomatik kurgulanır.",
+      run: () => {
+        activateStep('p_kesif');
+        setTimeout(() => activateStep('p_hikaye'), 1200);
+        setTimeout(() => activateStep('p_storyboard'), 2400);
+      }
+    },
+    {
+      text: "Nöral görsel ve ses aşamasında, Cilo Dağları projesinde dengbêj nefesi ve akustik doku yapay zekâ tarafından izole edildi.",
+      run: () => {
+        activateStep('p_gorsel');
+        activateStep('p_ses');
+        document.getElementById('clipA').style.boxShadow = "0 0 15px #8b5cf6";
+      }
+    },
+    {
+      text: "Duygusal Zaman Çizgisi motoru; sahnenin ritmini, gerilimini ve müzik yükselişini milisaniyelik hassasiyetle yönetir.",
+      run: () => {
+        activateStep('p_kurgu');
+        runPlayhead();
+      }
+    },
+    {
+      text: "Creative Critic sistemi kurguyu analiz ederken, İzleyici Simülasyonu eserin seyircide bırakacağı duygusal etkiyi önceden test eder.",
+      run: () => {
+        focusCard('boxCritic');
+        activateStep('p_analiz');
+        activateStep('p_izleyici');
+        document.getElementById('monitorScreen').classList.add('ai-graded');
+      }
+    },
+    {
+      text: "Ve EKOKO ekosistemine katılacak en gururlu yenilik: Gewer AI! Coğrafyamızın ruhunu ve kadim dilin derinliğini yapay zekâ çağına taşıyan yerel modelimiz...",
+      run: () => {
+        document.getElementById('gewerModal').style.display = 'flex';
+      }
+    },
+    {
+      text: "Gewer AI çok yakında doğrudan EKOKO stüdyosu içerisinde yerini alacak! Gelecekte soru 'Hangi kurgu programını kullandın' değil; 'Bunu EKOKO ile mi ürettin' olacaktır.",
+      run: () => activateStep('p_final')
+    }
+  ];
+
+  let currentIdx = 0;
+
+  function startStudioOS() {
+    document.getElementById('splash').style.display = 'none';
+    startMeter();
+    currentIdx = 0;
+    executeStep();
+  }
+
+  function executeStep() {
+    if (currentIdx >= studioScript.length) {
+      stopMeter();
+      document.getElementById('speechOut').innerText = "Prodüksiyon sunumu başarıyla tamamlandı.";
+      return;
+    }
+
+    const current = studioScript[currentIdx];
+    document.getElementById('speechOut').innerText = current.text;
+    current.run();
+
+    const u = new SpeechSynthesisUtterance(current.text);
+    u.lang = 'tr-TR';
+    u.rate = 0.92;
+
+    u.onend = () => {
+      currentIdx++;
+      setTimeout(executeStep, 1000);
+    };
+
+    u.onerror = () => {
+      setTimeout(() => {
+        currentIdx++;
+        executeStep();
+      }, 6500);
+    };
+
+    window.speechSynthesis.speak(u);
+  }
+
+  function activateStep(id) {
+    document.querySelectorAll('.pipe-step').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('active');
+      pointerTo(el);
+    }
+  }
+
+  function focusCard(id) {
+    document.querySelectorAll('.director-card').forEach(c => c.style.borderColor = 'rgba(255,255,255,0.06)');
+    const c = document.getElementById(id);
+    if (c) {
+      c.style.borderColor = '#fbbf24';
+      pointerTo(c);
+    }
+  }
+
+  function pointerTo(el) {
+    const ptr = document.getElementById('pointer');
+    const r = el.getBoundingClientRect();
+    ptr.style.display = 'block';
+    ptr.style.top = (r.top + r.height / 2) + 'px';
+    ptr.style.left = (r.left + r.width / 2) + 'px';
+    ptr.classList.add('tap');
+    setTimeout(() => ptr.classList.remove('tap'), 400);
+  }
+
+  function runPlayhead() {
+    const needle = document.getElementById('needle');
+    let p = 8;
+    const t = setInterval(() => {
+      p += 2.5;
+      needle.style.left = p + '%';
+      if (p > 88) clearInterval(t);
+    }, 120);
+  }
+
+  function startMeter() {
+    meterTimer = setInterval(() => {
+      bars.forEach(b => {
+        b.style.height = (Math.floor(Math.random() * 16) + 4) + 'px';
+      });
+    }, 90);
+  }
+
+  function stopMeter() {
+    clearInterval(meterTimer);
+    bars.forEach(b => b.style.height = '4px');
+  }
+</script>
+</body>
+</html>
